@@ -1,0 +1,31 @@
+name: Build Snisago Music (Windows)
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch: # Позволяет запустить сборку вручную по кнопке
+
+jobs:
+  build:
+    runs-on: windows-latest # Запускаем виртуальную машину на Windows
+
+    steps:
+      - name: Скачивание исходного кода
+        uses: actions/checkout@v4
+
+      - name: Установка Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18' # Версия Node.js для сборки
+
+      - name: Установка зависимостей (npm install)
+        run: npm install
+
+      - name: Компиляция приложения (.exe)
+        run: npm run dist
+
+      - name: Сохранение готового установщика
+        uses: actions/upload-artifact@v4
+        with:
+          name: Snisago-Music-Installer
+          path: dist/*.exe
