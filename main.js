@@ -156,3 +156,15 @@ app.whenReady().then(() => {
     app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) createWindow(); }); 
 });
 app.on('window-all-closed', () => { if (process.platform !== 'darwin') app.quit(); });
+
+// Сообщаем интерфейсу, что установлена самая новая версия
+autoUpdater.on('update-not-available', () => {
+    const win = BrowserWindow.getAllWindows()[0];
+    if (win) win.webContents.send('update_not_available');
+});
+
+// Сообщаем интерфейсу, если произошла ошибка при поиске
+autoUpdater.on('error', (err) => {
+    const win = BrowserWindow.getAllWindows()[0];
+    if (win) win.webContents.send('update_error', err.message);
+});
