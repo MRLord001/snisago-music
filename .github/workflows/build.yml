@@ -16,7 +16,7 @@ jobs:
       - name: Установка Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18' # Версия Node.js для сборки
+          node-version: '22' # Версия Node.js для сборки
 
       - name: Установка зависимостей (npm install)
         run: npm install
