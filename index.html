@@ -281,6 +281,24 @@
     <div class="splash-text">ЗАГРУЖАЮ ДВИЖОК...</div>
   </div>
 
+  <!-- ОКНО АВТООБНОВЛЕНИЙ -->
+  <div id="updateModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.85); z-index:10000; align-items:center; justify-content:center; backdrop-filter:blur(10px);">
+    <div style="background:var(--player-bg); padding:30px; border-radius:16px; border:1px solid var(--accent); width:350px; text-align:center; box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);">
+      <div style="font-size:40px; margin-bottom:10px;">🚀</div>
+      <h3 style="color:#fff; margin-bottom:10px; font-size:20px;">Внимание! Старая версия</h3>
+      <p style="color:var(--text-muted); margin-bottom:20px; font-size:14px;">Ваш плеер устарел. На сервере доступна новая версия Snisago Music (<span id="updateVersionNum" style="color:var(--accent); font-weight:bold;"></span>). Рекомендуем обновиться!</p>
+      <div style="display:flex; gap:10px; justify-content:center;">
+        <button id="btnCancelUpdate" style="padding:10px 20px; border-radius:8px; background:rgba(255,255,255,0.1); color:#fff; border:none; cursor:pointer; font-weight:600; flex:1; transition:0.2s;">Позже</button>
+        <button id="btnDownloadUpdate" style="padding:10px 20px; border-radius:8px; background:var(--accent); color:#fff; border:none; cursor:pointer; font-weight:600; flex:1; transition:0.2s;">Обновить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- СТАТУС ПРОВЕРКИ ОБНОВЛЕНИЙ (Плашка) -->
+  <div id="updateStatusModal" style="display:none; position:fixed; top:20px; right:20px; background:var(--player-bg); padding:15px 25px; border-radius:12px; border:1px solid var(--accent); z-index:10001; box-shadow: 0 4px 20px rgba(0,0,0,0.5); backdrop-filter:blur(10px);">
+      <div id="updateStatusText" style="color:#fff; font-size:14px; font-weight:600;">Поиск обновлений...</div>
+  </div>
+
   <div id="playlistModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.8); z-index:9999; align-items:center; justify-content:center; backdrop-filter:blur(5px);">
     <div style="background:var(--player-bg); padding:30px; border-radius:16px; border:1px solid var(--border-color); width:350px; text-align:center;">
         <h3 style="color:#fff; margin-bottom:15px; font-size:18px;">Новый плейлист</h3>
@@ -660,34 +678,28 @@
 
     // ================= НОВАЯ ЛОГИКА ЗАЛИВКИ ПОЛЗУНКОВ =================
     function updateRangeFills() {
-      // Трек
       if (audio.duration && audio.duration !== Infinity) {
         const pVal = (progressBar.value / 100) * 100 || 0;
         progressBar.style.background = `linear-gradient(to right, var(--accent) ${pVal}%, rgba(255,255,255,0.25) ${pVal}%)`;
       } else {
         progressBar.style.background = `rgba(255,255,255,0.25)`;
       }
-      
-      // Громкость
       const vVal = volumeBar.value || 0;
       volumeBar.style.background = `linear-gradient(to right, #fff ${vVal}%, rgba(255,255,255,0.25) ${vVal}%)`;
     }
-    // ====================================================================
 
     audio.volume = parseInt(configStartVolume) / 100;
     volumeBar.value = configStartVolume;
-    updateRangeFills(); // Заливаем громкость при старте
+    updateRangeFills(); 
 
-    function showToast(text) {
-      const toast = document.createElement('div');
-      toast.innerText = text;
-      toast.style.cssText = 'position:fixed; bottom:110px; right:30px; background:var(--accent); color:#fff; padding:10px 20px; border-radius:8px; z-index:9999; box-shadow:0 4px 15px rgba(0,0,0,0.5); opacity:0; transition:opacity 0.3s; font-size:14px; font-weight:600;';
-      document.body.appendChild(toast);
-      setTimeout(() => toast.style.opacity = '1', 10);
-      setTimeout(() => {
-          toast.style.opacity = '0';
-          setTimeout(() => toast.remove(), 300);
-      }, 3000);
+    // НОВАЯ ФУНКЦИЯ: Уведомления исключительно для обновлений
+    function showUpdateNotification(text, isError = false) {
+        const modal = document.getElementById('updateStatusModal');
+        const textEl = document.getElementById('updateStatusText');
+        textEl.innerText = text;
+        modal.style.borderColor = isError ? '#ef4444' : 'var(--accent)';
+        modal.style.display = 'block';
+        setTimeout(() => modal.style.display = 'none', 4000);
     }
 
     document.getElementById('toggleSidebarBtn').addEventListener('click', () => { document.getElementById('sidebar').classList.toggle('collapsed'); });
@@ -760,7 +772,7 @@
     document.getElementById('btnCancelPlaylist').addEventListener('click', () => { plModal.style.display = 'none'; });
     document.getElementById('btnSavePlaylist').addEventListener('click', () => {
         const name = plInput.value.trim();
-        if (name !== '') { customPlaylists.push({ id: Date.now().toString(), name: name, tracks: [] }); savePlaylists(); renderPlaylistsSidebar(); showToast('Плейлист успешно создан!'); }
+        if (name !== '') { customPlaylists.push({ id: Date.now().toString(), name: name, tracks: [] }); savePlaylists(); renderPlaylistsSidebar(); }
         plModal.style.display = 'none';
     });
 
@@ -783,8 +795,7 @@
             if(!pl.tracks.some(t => t.src === draggedTrackData.src)) {
                 pl.tracks.push(draggedTrackData); savePlaylists();
                 if(currentFilter === `playlist_${pl.id}`) renderTracks();
-                showToast(`Трек добавлен в "${pl.name}"`);
-            } else { showToast(`Трек уже есть в "${pl.name}"`); }
+            }
           }
         });
         container.appendChild(a);
@@ -884,7 +895,7 @@
         let displayedBgValue = configCustomBg;
         if (configCustomBg.startsWith('file:///')) { const parts = configCustomBg.split('/'); displayedBgValue = "Локальный файл: " + parts[parts.length - 1]; }
 
-        trackListContainer.innerHTML = `<div class="settings-card"><div class="settings-header"><h3 style="color: #fff; font-size: 24px; margin: 0;">Настройки приложения</h3><p style="color: var(--text-muted); font-size: 14px; margin-top: 6px;">Управление внешним видом и поведением плеера</p></div><div class="settings-body"><div class="setting-row"><div class="setting-info"><div class="setting-title">Тема оформления</div><div class="setting-desc">Выберите базовый стиль интерфейса плеера</div></div><div class="pills-group"><div class="pill ${configTheme === 'glass' ? 'active' : ''}" data-theme="glass">Dark Glass</div><div class="pill ${configTheme === 'oled' ? 'active' : ''}" data-theme="oled">OLED Black</div><div class="pill ${configTheme === 'custom' ? 'active' : ''}" data-theme="custom">Арт / Фото</div></div></div><div class="setting-row" id="rowCustomBg" style="display: ${configTheme === 'custom' ? 'flex' : 'none'}; flex-direction: column; align-items: flex-start; padding-top: 0; border-bottom: 1px solid var(--border-color);"><div style="display: flex; gap: 10px; width: 100%; margin-top: 15px; align-items: center;"><input type="text" id="inputCustomBg" class="settings-input" placeholder="Прямая ссылка на фото (URL)..." value="${displayedBgValue}" style="margin-top: 0; flex: 1;"><button class="btn-add" id="btnBrowseBg" style="border-radius: 8px; padding: 10px 15px;">📁 Файл</button><input type="file" id="fileInputBg" accept="image/png, image/jpeg, image/webp, image/gif" style="display: none;"></div><span class="settings-hint" id="hintCustomBg" style="margin-top: 6px;">Вставьте URL или загрузите картинку с компьютера.</span></div><div class="setting-row"><div class="setting-info"><div class="setting-title">Цвет аудио-волн</div><div class="setting-desc">Палитра для визуализатора спектра частот</div></div><div class="color-swatches"><div class="swatch ${configVisualizerColor === 'purple' ? 'active' : ''}" data-color="purple" style="background: linear-gradient(135deg, #8b5cf6, #d946ef); color: #d946ef;" title="Неоновый фиолетовый"></div><div class="swatch ${configVisualizerColor === 'green' ? 'active' : ''}" data-color="green" style="background: linear-gradient(135deg, #10b981, #059669); color: #059669;" title="Токсично-зеленый"></div><div class="swatch ${configVisualizerColor === 'cyan' ? 'active' : ''}" data-color="cyan" style="background: linear-gradient(135deg, #06b6d4, #3b82f6); color: #3b82f6;" title="Ледяной синий"></div><div class="swatch ${configVisualizerColor === 'crimson' ? 'active' : ''}" data-color="crimson" style="background: linear-gradient(135deg, #e11d48, #9f1239); color: #9f1239;" title="Кроваво-красный"></div></div></div><div class="setting-row"><div class="setting-info"><div class="setting-title">Показывать спектр в шапке</div><div class="setting-desc">Отображать верхний блок волноформы аудио на страницах списков</div></div><label class="switch"><input type="checkbox" id="toggleHeaderVis" ${configHeaderVis === 'on' ? 'checked' : ''}><span class="slider"></span></label></div><div class="setting-row"><div class="setting-info"><div class="setting-title">Анимация спектра</div><div class="setting-desc">Отображать волноформу звука на главном экране</div></div><label class="switch"><input type="checkbox" id="toggleVis" ${configVisualizerEnabled === 'on' ? 'checked' : ''}><span class="slider"></span></label></div><div class="setting-row"><div class="setting-info"><div class="setting-title">Системные уведомления</div><div class="setting-desc">Показывать всплывающее окно Windows при смене трека</div></div><label class="switch"><input type="checkbox" id="toggleNotif" ${configNotif === 'on' ? 'checked' : ''}><span class="slider"></span></label></div><div class="setting-row"><div class="setting-info"><div class="setting-title">Интеграция Discord (RPC)</div><div class="setting-desc">Транслировать текущий трек в статус вашего профиля Discord</div></div><label class="switch"><input type="checkbox" id="toggleDiscord" ${configDiscord === 'on' ? 'checked' : ''}><span class="slider"></span></label></div><div style="margin-top: 30px;"><h4 style="color: #fff; font-size: 15px; font-weight: 600; margin-bottom: 10px;">О системе</h4><div class="info-box"><div class="info-item">Версия Snisago Music: <span>1.5.0-stable</span></div><div class="info-item">Окружение Electron: <span>v${process.versions.electron}</span></div><div class="info-item">Платформа Node.js: <span>v${process.versions.node}</span></div><div class="info-item">Музыкальный шлюз: <span>yt-dlp Core (OK)</span></div></div></div><button class="btn-settings-danger" id="btnFactoryReset">Сбросить все настройки приложения</button></div></div>`;
+        trackListContainer.innerHTML = `<div class="settings-card"><div class="settings-header"><h3 style="color: #fff; font-size: 24px; margin: 0;">Настройки приложения</h3><p style="color: var(--text-muted); font-size: 14px; margin-top: 6px;">Управление внешним видом и поведением плеера</p></div><div class="settings-body"><div class="setting-row"><div class="setting-info"><div class="setting-title">Тема оформления</div><div class="setting-desc">Выберите базовый стиль интерфейса плеера</div></div><div class="pills-group"><div class="pill ${configTheme === 'glass' ? 'active' : ''}" data-theme="glass">Dark Glass</div><div class="pill ${configTheme === 'oled' ? 'active' : ''}" data-theme="oled">OLED Black</div><div class="pill ${configTheme === 'custom' ? 'active' : ''}" data-theme="custom">Арт / Фото</div></div></div><div class="setting-row" id="rowCustomBg" style="display: ${configTheme === 'custom' ? 'flex' : 'none'}; flex-direction: column; align-items: flex-start; padding-top: 0; border-bottom: 1px solid var(--border-color);"><div style="display: flex; gap: 10px; width: 100%; margin-top: 15px; align-items: center;"><input type="text" id="inputCustomBg" class="settings-input" placeholder="Прямая ссылка на фото (URL)..." value="${displayedBgValue}" style="margin-top: 0; flex: 1;"><button class="btn-add" id="btnBrowseBg" style="border-radius: 8px; padding: 10px 15px;">📁 Файл</button><input type="file" id="fileInputBg" accept="image/png, image/jpeg, image/webp, image/gif" style="display: none;"></div><span class="settings-hint" id="hintCustomBg" style="margin-top: 6px;">Вставьте URL или загрузите картинку с компьютера.</span></div><div class="setting-row"><div class="setting-info"><div class="setting-title">Цвет аудио-волн</div><div class="setting-desc">Палитра для визуализатора спектра частот</div></div><div class="color-swatches"><div class="swatch ${configVisualizerColor === 'purple' ? 'active' : ''}" data-color="purple" style="background: linear-gradient(135deg, #8b5cf6, #d946ef); color: #d946ef;" title="Неоновый фиолетовый"></div><div class="swatch ${configVisualizerColor === 'green' ? 'active' : ''}" data-color="green" style="background: linear-gradient(135deg, #10b981, #059669); color: #059669;" title="Токсично-зеленый"></div><div class="swatch ${configVisualizerColor === 'cyan' ? 'active' : ''}" data-color="cyan" style="background: linear-gradient(135deg, #06b6d4, #3b82f6); color: #3b82f6;" title="Ледяной синий"></div><div class="swatch ${configVisualizerColor === 'crimson' ? 'active' : ''}" data-color="crimson" style="background: linear-gradient(135deg, #e11d48, #9f1239); color: #9f1239;" title="Кроваво-красный"></div></div></div><div class="setting-row"><div class="setting-info"><div class="setting-title">Показывать спектр в шапке</div><div class="setting-desc">Отображать верхний блок волноформы аудио на страницах списков</div></div><label class="switch"><input type="checkbox" id="toggleHeaderVis" ${configHeaderVis === 'on' ? 'checked' : ''}><span class="slider"></span></label></div><div class="setting-row"><div class="setting-info"><div class="setting-title">Анимация спектра</div><div class="setting-desc">Отображать волноформу звука на главном экране</div></div><label class="switch"><input type="checkbox" id="toggleVis" ${configVisualizerEnabled === 'on' ? 'checked' : ''}><span class="slider"></span></label></div><div class="setting-row"><div class="setting-info"><div class="setting-title">Системные уведомления</div><div class="setting-desc">Показывать всплывающее окно Windows при смене трека</div></div><label class="switch"><input type="checkbox" id="toggleNotif" ${configNotif === 'on' ? 'checked' : ''}><span class="slider"></span></label></div><div class="setting-row"><div class="setting-info"><div class="setting-title">Интеграция Discord (RPC)</div><div class="setting-desc">Транслировать текущий трек в статус вашего профиля Discord</div></div><label class="switch"><input type="checkbox" id="toggleDiscord" ${configDiscord === 'on' ? 'checked' : ''}><span class="slider"></span></label></div><div class="setting-row"><div class="setting-info"><div class="setting-title">Обновления плеера</div><div class="setting-desc">Проверить наличие новых версий на сервере</div></div><button class="btn-add" id="btnCheckUpdates" style="border-radius: 8px; padding: 10px 15px;">Проверить</button></div><div style="margin-top: 30px;"><h4 style="color: #fff; font-size: 15px; font-weight: 600; margin-bottom: 10px;">О системе</h4><div class="info-box"><div class="info-item">Версия Snisago Music: <span>1.5.0-stable</span></div><div class="info-item">Окружение Electron: <span>v${process.versions.electron}</span></div><div class="info-item">Платформа Node.js: <span>v${process.versions.node}</span></div><div class="info-item">Музыкальный шлюз: <span>yt-dlp Core (OK)</span></div></div></div><button class="btn-settings-danger" id="btnFactoryReset">Сбросить все настройки приложения</button></div></div>`;
         
         document.querySelectorAll('.pill').forEach(pill => { pill.addEventListener('click', (e) => { document.querySelectorAll('.pill').forEach(p => p.classList.remove('active')); e.target.classList.add('active'); configTheme = e.target.dataset.theme; localStorage.setItem('snisago_theme', configTheme); document.getElementById('rowCustomBg').style.display = configTheme === 'custom' ? 'flex' : 'none'; applySavedConfig(); }); });
         document.getElementById('btnBrowseBg').addEventListener('click', () => { document.getElementById('fileInputBg').click(); });
@@ -895,6 +906,13 @@
         document.getElementById('toggleVis').addEventListener('change', (e) => { configVisualizerEnabled = e.target.checked ? 'on' : 'off'; localStorage.setItem('snisago_vis_enabled', configVisualizerEnabled); });
         document.getElementById('toggleNotif').addEventListener('change', (e) => { configNotif = e.target.checked ? 'on' : 'off'; localStorage.setItem('snisago_notif', configNotif); });
         document.getElementById('toggleDiscord').addEventListener('change', (e) => { configDiscord = e.target.checked ? 'on' : 'off'; localStorage.setItem('snisago_discord', configDiscord); if (configDiscord === 'on') { if (isPlaying) updateDiscordRPC(true); } else { ipcRenderer.send('clear-rpc'); } });
+        
+        // ПРОВЕРКА ОБНОВЛЕНИЙ ЧЕРЕЗ НАСТРОЙКИ
+        document.getElementById('btnCheckUpdates').addEventListener('click', () => {
+            showUpdateNotification("Проверка обновлений...");
+            ipcRenderer.send('check_update');
+        });
+
         document.getElementById('btnFactoryReset').addEventListener('click', () => { if(confirm("Удалить все данные, включая избранные треки и настройки?")) { localStorage.clear(); window.location.reload(); } });
         return;
       }
@@ -1005,13 +1023,12 @@
     });
 
     audio.addEventListener('timeupdate', () => {
-      // ИСПРАВЛЕННАЯ ЛОГИКА ДЛЯ РАДИО
       if (!audio.duration || audio.duration === Infinity) { 
         document.getElementById('currentTime').innerText = "LIVE"; 
         document.getElementById('duration').innerText = "∞"; 
         progressBar.value = 100; 
-        progressBar.style.opacity = '0.6'; // Сделали намного ярче (было 0.2)
-        progressBar.style.pointerEvents = 'none'; // Отключаем клики по пустому ползунку
+        progressBar.style.opacity = '0.6'; 
+        progressBar.style.pointerEvents = 'none'; 
         updateRangeFills();
         return; 
       }
@@ -1024,7 +1041,7 @@
       let dMins = Math.floor(audio.duration / 60); let dSecs = Math.floor(audio.duration % 60);
       document.getElementById('duration').innerText = `${dMins}:${dSecs < 10 ? '0' : ''}${dSecs}`;
       
-      updateRangeFills(); // Обновляем заливку
+      updateRangeFills();
     });
 
     progressBar.addEventListener('input', () => { 
@@ -1062,8 +1079,8 @@
         if (rightClickedTrackIndex !== null) { 
             const track = playlist[rightClickedTrackIndex]; 
             const isFav = favoriteTracks.some(f => f.src === track.src); 
-            if (!isFav) { favoriteTracks.push(track); showToast("Добавлено в Избранное"); } 
-            else { favoriteTracks = favoriteTracks.filter(f => f.src !== track.src); showToast("Удалено из Избранного"); }
+            if (!isFav) { favoriteTracks.push(track); } 
+            else { favoriteTracks = favoriteTracks.filter(f => f.src !== track.src); }
             saveFavorites(); renderTracks(); 
         } 
     });
@@ -1115,7 +1132,6 @@
             });
           } else { myMusicTracks.unshift(trackObj); saveMyMusic(); if(currentFilter === 'myMusic') renderTracks(); }
         }); 
-        showToast(`Добавлено в Мою музыку: ${mp3Files.length} треков`); 
       } 
     });
 
@@ -1171,6 +1187,48 @@
     
     renderPlaylistsSidebar();
     renderTracks();
+
+    // ============================================
+    // СИСТЕМА ПРОВЕРКИ ОБНОВЛЕНИЙ И УВЕДОМЛЕНИЙ
+    // ============================================
+
+    // Показываем плашку, если появилась новая версия
+    ipcRenderer.on('update_available', (event, version) => {
+      document.getElementById('updateVersionNum').innerText = version || 'Новая версия';
+      document.getElementById('updateModal').style.display = 'flex';
+    });
+
+    // Показываем плашку, если версия актуальная
+    ipcRenderer.on('update_not_available', () => {
+      showUpdateNotification("У вас установлена актуальная версия плеера.");
+    });
+
+    // Обработка ошибки
+    ipcRenderer.on('update_error', (event, err) => {
+      showUpdateNotification("Произошла ошибка при поиске обновлений.", true);
+    });
+
+    // Если обновление скачалось, меняем кнопку
+    ipcRenderer.on('update_downloaded', () => {
+      const btn = document.getElementById('btnDownloadUpdate');
+      btn.innerText = 'Установить и перезапустить';
+      btn.style.background = '#10b981';
+      btn.disabled = false;
+      btn.onclick = () => ipcRenderer.send('install_update');
+    });
+
+    document.getElementById('btnCancelUpdate').addEventListener('click', () => {
+      document.getElementById('updateModal').style.display = 'none';
+    });
+
+    document.getElementById('btnDownloadUpdate').addEventListener('click', (e) => {
+      if (e.target.innerText === 'Обновить') {
+         e.target.innerText = 'Скачивание...';
+         e.target.disabled = true;
+         ipcRenderer.send('download_update');
+      }
+    });
+
   </script>
 </body>
 </html>
