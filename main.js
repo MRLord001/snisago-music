@@ -1,5 +1,5 @@
-const { autoUpdater } = require('electron-updater');
 const { app, BrowserWindow, ipcMain } = require('electron');
+const { autoUpdater } = require('electron-updater'); // <-- Добавлено сюда
 const path = require('path');
 const http = require('http');
 const fs = require('fs');
@@ -120,7 +120,7 @@ function startServer() {
         console.error('Ошибка парсинга:', err.message);
         if (!res.headersSent) { res.writeHead(500); res.end(); }
       }
-    }
+    } 
     
     else if (urlObj.pathname === '/api/stream') {
       const targetUrl = urlObj.searchParams.get('url');
@@ -158,13 +158,45 @@ app.whenReady().then(() => {
 });
 app.on('window-all-closed', () => { if (process.platform !== 'darwin') app.quit(); });
 
-// Сообщаем интерфейсу, что установлена самая новая версия
+
+// ==========================================
+// СИСТЕМА АВТООБНОВЛЕНИЙ
+// ==========================================
+
+autoUpdater.autoDownload = false;
+
+// Слушаем кнопки из интерфейса
+ipcMain.on('check_update', () => {
+    autoUpdater.checkForUpdates().catch(err => {
+        const win = BrowserWindow.getAllWindows()[0];
+        if (win) win.webContents.send('update_error', err.message);
+    });
+});
+
+ipcMain.on('download_update', () => {
+    autoUpdater.downloadUpdate();
+});
+
+ipcMain.on('install_update', () => {
+    autoUpdater.quitAndInstall();
+});
+
+// Отправляем ответы в интерфейс
+autoUpdater.on('update-available', (info) => {
+    const win = BrowserWindow.getAllWindows()[0];
+    if (win) win.webContents.send('update_available', info.version);
+});
+
 autoUpdater.on('update-not-available', () => {
     const win = BrowserWindow.getAllWindows()[0];
     if (win) win.webContents.send('update_not_available');
 });
 
-// Сообщаем интерфейсу, если произошла ошибка при поиске
+autoUpdater.on('update-downloaded', () => {
+    const win = BrowserWindow.getAllWindows()[0];
+    if (win) win.webContents.send('update_downloaded');
+});
+
 autoUpdater.on('error', (err) => {
     const win = BrowserWindow.getAllWindows()[0];
     if (win) win.webContents.send('update_error', err.message);
