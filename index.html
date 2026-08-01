@@ -5,7 +5,6 @@
   <title>Snisago Music</title>
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js"></script>
-  <!-- Библиотека для перетаскивания элементов интерфейса -->
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
   <style>
@@ -19,7 +18,7 @@
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --border-color: rgba(255, 255, 255, 0.05);
-      --app-opacity: 1; /* Глобальная прозрачность панелей */
+      --app-opacity: 1;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
@@ -196,7 +195,7 @@
     }
     body.mini-player-mode #btnMiniPlayer { margin: 0; color: var(--accent); transform: scale(1.1); }
 
-    /* ПОЛНОЭКРАННЫЙ РЕЖИМ (NOW PLAYING) */
+    /* ПОЛНОЭКРАННЫЙ РЕЖИМ */
     .now-playing-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: calc(100vh - 90px); z-index: 150; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); transform: translateY(100%); overflow: hidden; background: #09090b; }
     .now-playing-overlay.active { opacity: 1; pointer-events: all; transform: translateY(0); }
     .np-background { position: absolute; top: -10%; left: -10%; width: 120%; height: 120%; background-size: cover; background-position: center; filter: blur(70px) brightness(0.3); z-index: 1; transition: background-image 0.5s ease; }
@@ -221,20 +220,18 @@
     .card-icon { font-size: 28px; margin-bottom: 15px; background: rgba(255,255,255,0.05); width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); }
     .card-title { font-size: 17px; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
     .card-desc { font-size: 13px; color: var(--text-muted); line-height: 1.4; }
-    .info-box { background: rgba(255,255,255,0.01); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px 20px; margin-top: 25px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; font-size: 13px; }
-    .info-item { color: var(--text-muted); }
-    .info-item span { color: #fff; font-weight: 600; margin-left: 5px; }
 
-    /* НАСТРОЙКИ (Расширенные) */
+    /* --- НОВЫЙ ДИЗАЙН НАСТРОЕК --- */
     .settings-card { background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: 16px; width: 100%; max-width: 800px; margin-bottom: 100px; overflow: hidden; backdrop-filter: blur(10px); }
     .settings-header { padding: 30px; border-bottom: 1px solid var(--border-color); background: rgba(0,0,0,0.2); }
     .settings-body { padding: 10px 30px 30px 30px; }
-    .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-bottom: 1px solid var(--border-color); }
+    .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 25px 0; border-bottom: 1px solid var(--border-color); }
     .setting-row:last-child { border-bottom: none; }
     .setting-info { display: flex; flex-direction: column; gap: 6px; flex: 1; padding-right: 20px; }
     .setting-title { font-size: 15px; font-weight: 600; color: var(--text-main); }
     .setting-desc { font-size: 13px; color: var(--text-muted); line-height: 1.4; }
     
+    /* Переключатели */
     .switch { position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0; }
     .switch input { opacity: 0; width: 0; height: 0; }
     .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.1); transition: .3s; border-radius: 24px; }
@@ -247,6 +244,24 @@
     .pill:hover { color: #fff; }
     .pill.active { background: rgba(255,255,255,0.15); color: #fff; border-color: rgba(255,255,255,0.2); box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
     
+    /* Красивые кружочки-инпуты цвета */
+    .color-picker-wrapper { display: inline-block; width: 36px; height: 36px; border-radius: 50%; overflow: hidden; border: 2px solid rgba(255,255,255,0.2); cursor: pointer; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: 0.2s; }
+    .color-picker-wrapper:hover { transform: scale(1.1); border-color: #fff; }
+    .color-picker-wrapper input[type="color"] { position: absolute; top: -10px; left: -10px; width: 60px; height: 60px; cursor: pointer; border: none; outline: none; }
+    
+    /* Красивый ползунок прозрачности */
+    .settings-slider { -webkit-appearance: none; width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 4px; outline: none; }
+    .settings-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); cursor: pointer; box-shadow: 0 0 10px rgba(0,0,0,0.5); transition: 0.2s; }
+    .settings-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+    /* Горячие клавиши */
+    .hotkey-row { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); padding: 12px 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 8px; }
+    .hotkey-row span.label { font-size: 14px; color: var(--text-main); }
+    .hotkey-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 6px 12px; border-radius: 6px; color: var(--accent); font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.2s; min-width: 80px; text-align: center; }
+    .hotkey-btn:hover { background: rgba(255,255,255,0.1); border-color: var(--accent); }
+    .hotkey-btn.waiting { animation: pulseBtn 1s infinite; background: var(--accent); color: #fff; }
+    @keyframes pulseBtn { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
     .color-swatches { display: flex; gap: 12px; }
     .swatch { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: all 0.2s; position: relative; }
     .swatch:hover { transform: scale(1.1); }
@@ -257,15 +272,8 @@
     .settings-input:focus { border-color: var(--accent); }
     .btn-settings-danger { padding: 12px 24px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 8px; color: #ef4444; font-weight: 600; cursor: pointer; transition: all 0.2s; width: 100%; margin-top: 20px; font-size: 14px; }
     .btn-settings-danger:hover { background: rgba(239, 68, 68, 0.2); color: #f87171; }
-    
-    input[type="color"] { cursor: pointer; border: none; border-radius: 4px; width: 40px; height: 40px; background: transparent; }
 
-    .hotkey-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); padding: 8px 12px; border-radius: 8px; color: var(--text-main); font-size: 13px; cursor: pointer; width: 200px; display: flex; justify-content: space-between; align-items: center; }
-    .hotkey-btn:hover { background: rgba(255,255,255,0.1); }
-    .hotkey-btn span { color: var(--accent); font-weight: bold; background: rgba(0,0,0,0.3); padding: 2px 8px; border-radius: 4px; }
-    .hotkey-btn.waiting { border-color: var(--accent); box-shadow: 0 0 10px rgba(139, 92, 246, 0.3); }
-
-    /* СКРЫТИЕ ЭЛЕМЕНТОВ (ЧЕРЕЗ КЛАССЫ) */
+    /* СКРЫТИЕ ЭЛЕМЕНТОВ */
     body.hide-radio #menuBlockRadio { display: none !important; }
     body.hide-playlists #menuBlockPlaylists { display: none !important; }
     body.hide-mymusic #menuBlockMyMusic { display: none !important; }
@@ -288,7 +296,6 @@
     <div class="splash-text">ЗАГРУЖАЮ ДВИЖОК...</div>
   </div>
 
-  <!-- ОКНО АВТООБНОВЛЕНИЙ -->
   <div id="updateModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.85); z-index:10000; align-items:center; justify-content:center; backdrop-filter:blur(10px);">
     <div style="background:var(--player-bg); padding:30px; border-radius:16px; border:1px solid var(--accent); width:350px; text-align:center; box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);">
       <div style="font-size:40px; margin-bottom:10px;">🚀</div>
@@ -301,7 +308,6 @@
     </div>
   </div>
 
-  <!-- СТАТУС ПРОВЕРКИ ОБНОВЛЕНИЙ (Плашка) -->
   <div id="updateStatusModal" style="display:none; position:fixed; top:20px; right:20px; background:var(--player-bg); padding:15px 25px; border-radius:12px; border:1px solid var(--accent); z-index:10001; box-shadow: 0 4px 20px rgba(0,0,0,0.5); backdrop-filter:blur(10px);">
       <div id="updateStatusText" style="color:#fff; font-size:14px; font-weight:600;">Поиск обновлений...</div>
   </div>
@@ -370,7 +376,6 @@
         <input type="text" placeholder="Искать в плейлисте или по всему миру..." class="search-input" id="searchBox">
         <input type="text" placeholder="Ссылка на YouTube или MP3 поток..." class="url-input" id="urlBox">
         <button class="btn-add" id="btnAddUrl">Добавить</button>
-        <!-- НОВАЯ КНОПКА ЗАГРУЗКИ С ПК -->
         <button class="btn-add" id="btnLoadLocalFile" style="background: #3b82f6; margin-left: 5px;" title="Загрузить локальные треки (mp3, wav)">Загрузить с ПК</button>
         <input type="file" id="localAudioFiles" multiple accept=".mp3,.wav,.ogg,.flac,.m4a" style="display:none;">
       </header>
@@ -622,7 +627,6 @@
       { id: "rec-112", title: "Record «Christmas Chill»", artist: "Radio Record", src: "https://radiorecord.hostingradio.ru/christmaschill96.aacp", type: "web", isRadio: true, category: "record", cover: "linear-gradient(135deg, #f43f5e, #311042)" }
     ];
 
-    // ГЕНЕРАЦИЯ УМНЫХ ЛОКАЛЬНЫХ ОБЛОЖЕК
     gistRadioStations.forEach(station => {
       if (station.cover && station.cover.includes('linear-gradient')) {
         const colors = station.cover.match(/#[0-9a-fA-F]{3,6}/g) || ['#3b82f6', '#8b5cf6'];
@@ -641,7 +645,21 @@
     let isMiniPlayer = false;
     let isShuffle = false;
     let repeatMode = 0; 
+    let assigningHotkey = null; // Флаг для назначения кнопки
     
+    // ПАРСЕР ДЛЯ КРАСИВОГО ВЫВОДА КНОПОК
+    function formatKey(code) {
+        if (!code) return 'Не задано';
+        if (code.startsWith('Key')) return code.replace('Key', '');
+        if (code.startsWith('Digit')) return code.replace('Digit', '');
+        if (code === 'ArrowRight') return '→';
+        if (code === 'ArrowLeft') return '←';
+        if (code === 'ArrowUp') return '↑';
+        if (code === 'ArrowDown') return '↓';
+        if (code === 'Space') return 'Пробел';
+        return code;
+    }
+
     // ГЛОБАЛЬНЫЙ КОНФИГ
     let appConfig = JSON.parse(localStorage.getItem('snisago_full_config')) || {
         accent: "#8b5cf6", text: "#f8fafc", bg: "#09090b", transparency: 1,
@@ -676,7 +694,6 @@
     let rightClickedTrackIndex = null;
     let draggedTrackIndex = null;
     let draggedTrackData = null;
-    let assigningHotkey = null; // Для назначения кнопок
 
     let myMusicTracks = JSON.parse(localStorage.getItem('snisago_my_music')) || [];
     let favoriteTracks = JSON.parse(localStorage.getItem('snisago_fav_tracks')) || [];
@@ -949,43 +966,69 @@
                 <div class="setting-title">Цветовая палитра</div>
                 <div class="setting-desc">Изменить свои цвета интерфейса плеера</div>
               </div>
-              <div style="display:flex; gap:15px;">
-                <div style="text-align:center;"><input type="color" id="colorAccent" value="${appConfig.accent}"><br><span style="font-size:10px;">Акцент</span></div>
-                <div style="text-align:center;"><input type="color" id="colorText" value="${appConfig.text}"><br><span style="font-size:10px;">Текст</span></div>
-                <div style="text-align:center;"><input type="color" id="colorBg" value="${appConfig.bg}"><br><span style="font-size:10px;">Фон</span></div>
+              <div style="display:flex; gap:20px;">
+                <div style="text-align:center;">
+                    <div class="color-picker-wrapper"><input type="color" id="colorAccent" value="${appConfig.accent}"></div>
+                    <div style="font-size:11px; margin-top:5px; color:var(--text-muted);">Акцент</div>
+                </div>
+                <div style="text-align:center;">
+                    <div class="color-picker-wrapper"><input type="color" id="colorText" value="${appConfig.text}"></div>
+                    <div style="font-size:11px; margin-top:5px; color:var(--text-muted);">Текст</div>
+                </div>
+                <div style="text-align:center;">
+                    <div class="color-picker-wrapper"><input type="color" id="colorBg" value="${appConfig.bg}"></div>
+                    <div style="font-size:11px; margin-top:5px; color:var(--text-muted);">Фон</div>
+                </div>
               </div>
             </div>
 
             <div class="setting-row">
               <div class="setting-info">
-                <div class="setting-title">Прозрачность элементов</div>
-                <div class="setting-desc">Настройте общую прозрачность всех панелей плеера</div>
+                <div class="setting-title">Прозрачность панелей</div>
+                <div class="setting-desc">Настройте общую прозрачность бокового меню и плеера</div>
               </div>
-              <input type="range" id="rangeOpacity" min="0.1" max="1" step="0.1" value="${appConfig.transparency}" style="width: 150px;">
+              <input type="range" class="settings-slider" id="rangeOpacity" min="0.1" max="1" step="0.05" value="${appConfig.transparency}" style="max-width: 200px;">
             </div>
 
-            <div class="setting-row">
-              <div class="setting-info">
-                <div class="setting-title">Скрытие разделов меню</div>
-                <div class="setting-desc">Отключите отображение ненужных папок в боковом меню</div>
+            <div class="setting-row" style="flex-direction:column; align-items:stretch;">
+              <div class="setting-info" style="margin-bottom:15px;">
+                <div class="setting-title">Отображение разделов</div>
+                <div class="setting-desc">Скройте папки, которыми вы не пользуетесь</div>
               </div>
-              <div style="display:flex; flex-direction:column; gap:10px;">
-                <label style="font-size:13px; cursor:pointer;"><input type="checkbox" id="chkRadio" ${appConfig.hideRadio ? 'checked' : ''}> Скрыть Радио</label>
-                <label style="font-size:13px; cursor:pointer;"><input type="checkbox" id="chkPlaylists" ${appConfig.hidePlaylists ? 'checked' : ''}> Скрыть Плейлисты</label>
-                <label style="font-size:13px; cursor:pointer;"><input type="checkbox" id="chkMyMusic" ${appConfig.hideMyMusic ? 'checked' : ''}> Скрыть Медиатеку</label>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding:0 10px;">
+                <span style="font-size:14px; color:var(--text-main);">Радиостанции</span>
+                <label class="switch"><input type="checkbox" id="chkRadio" ${appConfig.hideRadio ? 'checked' : ''}><span class="slider"></span></label>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding:0 10px;">
+                <span style="font-size:14px; color:var(--text-main);">Плейлисты</span>
+                <label class="switch"><input type="checkbox" id="chkPlaylists" ${appConfig.hidePlaylists ? 'checked' : ''}><span class="slider"></span></label>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:0 10px;">
+                <span style="font-size:14px; color:var(--text-main);">Медиатека</span>
+                <label class="switch"><input type="checkbox" id="chkMyMusic" ${appConfig.hideMyMusic ? 'checked' : ''}><span class="slider"></span></label>
               </div>
             </div>
 
-            <div class="setting-row">
-              <div class="setting-info">
+            <div class="setting-row" style="flex-direction:column; align-items:stretch;">
+              <div class="setting-info" style="margin-bottom:15px;">
                 <div class="setting-title">Горячие клавиши</div>
-                <div class="setting-desc">Нажмите на кнопку и введите новую клавишу</div>
+                <div class="setting-desc">Нажмите на кнопку и введите новую клавишу (Esc для отмены)</div>
               </div>
-              <div style="display:flex; flex-direction:column; gap:5px;">
-                <button class="hotkey-btn" data-action="play">Play/Pause: <span>${appConfig.hotkeys.play}</span></button>
-                <button class="hotkey-btn" data-action="next">След. трек: <span>${appConfig.hotkeys.next}</span></button>
-                <button class="hotkey-btn" data-action="prev">Пред. трек: <span>${appConfig.hotkeys.prev}</span></button>
-                <button class="hotkey-btn" data-action="mute">Звук (Вкл/Выкл): <span>${appConfig.hotkeys.mute}</span></button>
+              <div class="hotkey-row">
+                <span class="label">Play / Pause</span>
+                <button class="hotkey-btn" data-action="play">${formatKey(appConfig.hotkeys.play)}</button>
+              </div>
+              <div class="hotkey-row">
+                <span class="label">Следующий трек</span>
+                <button class="hotkey-btn" data-action="next">${formatKey(appConfig.hotkeys.next)}</button>
+              </div>
+              <div class="hotkey-row">
+                <span class="label">Предыдущий трек</span>
+                <button class="hotkey-btn" data-action="prev">${formatKey(appConfig.hotkeys.prev)}</button>
+              </div>
+              <div class="hotkey-row">
+                <span class="label">Звук (Вкл / Выкл)</span>
+                <button class="hotkey-btn" data-action="mute">${formatKey(appConfig.hotkeys.mute)}</button>
               </div>
             </div>
 
@@ -1058,13 +1101,21 @@
           </div>
         </div>`;
         
-        // Логика горячих клавиш
+        // Логика бинда горячих клавиш (Без перерисовки всего DOM)
         document.querySelectorAll('.hotkey-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                // Сбрасываем остальные кнопки
+                document.querySelectorAll('.hotkey-btn').forEach(b => {
+                    b.classList.remove('waiting');
+                    if (appConfig.hotkeys[b.dataset.action]) {
+                        b.innerText = formatKey(appConfig.hotkeys[b.dataset.action]);
+                    }
+                });
+                
                 assigningHotkey = btn.dataset.action;
-                document.querySelectorAll('.hotkey-btn').forEach(b => b.classList.remove('waiting'));
                 btn.classList.add('waiting');
-                btn.querySelector('span').innerText = "Нажмите...";
+                btn.innerText = "Нажмите клавишу...";
             });
         });
 
@@ -1205,18 +1256,30 @@
 
     // ГЛОБАЛЬНЫЙ СЛУШАТЕЛЬ ГОРЯЧИХ КЛАВИШ
     window.addEventListener('keydown', (e) => {
-      // Если мы находимся в режиме назначения кнопки
+      // 1. Режим захвата новой кнопки
       if (assigningHotkey) {
           e.preventDefault();
-          appConfig.hotkeys[assigningHotkey] = e.code;
-          saveAppConfig();
+          e.stopPropagation();
+          
+          if (e.code !== 'Escape') {
+              appConfig.hotkeys[assigningHotkey] = e.code;
+              saveAppConfig();
+          }
+          
+          // Точечно обновляем текст на кнопке, без перерисовки экрана!
+          const btn = document.querySelector(`.hotkey-btn[data-action="${assigningHotkey}"]`);
+          if (btn) {
+              btn.classList.remove('waiting');
+              btn.innerText = formatKey(appConfig.hotkeys[assigningHotkey]);
+          }
           assigningHotkey = null;
-          if(currentFilter === 'settings') renderTracks(); // Обновляем текст на кнопках
           return;
       }
       
+      // 2. Блокируем бинды, если юзер пишет текст (например, в поиск или в названии плейлиста)
       if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return; 
       
+      // 3. Выполнение биндов
       if (e.code === appConfig.hotkeys.play) { e.preventDefault(); togglePlay(); }
       if (e.code === appConfig.hotkeys.next) { e.preventDefault(); nextBtn.click(); }
       if (e.code === appConfig.hotkeys.prev) { e.preventDefault(); prevBtn.click(); }
@@ -1225,6 +1288,20 @@
           audio.muted = !audio.muted; 
           document.getElementById('muteBtn').style.stroke = audio.muted ? '#ef4444' : 'var(--text-muted)';
       }
+    });
+
+    // Отмена захвата кнопки при клике в пустое место
+    window.addEventListener('click', (e) => { 
+        ctxMenu.style.display = 'none'; 
+        
+        if (assigningHotkey && !e.target.classList.contains('hotkey-btn')) {
+            const btn = document.querySelector(`.hotkey-btn[data-action="${assigningHotkey}"]`);
+            if (btn) {
+                btn.classList.remove('waiting');
+                btn.innerText = formatKey(appConfig.hotkeys[assigningHotkey]);
+            }
+            assigningHotkey = null;
+        }
     });
 
     // ЗАГРУЗКА С ПК
@@ -1237,7 +1314,7 @@
             files.forEach(file => {
                 const realPath = webUtils.getPathForFile(file);
                 const cleanName = file.name.replace(/\.[^/.]+$/, "");
-                let trackObj = { id: 'local-' + Date.now(), title: cleanName, artist: "ПК", src: realPath, type: "local", cover: 'linear-gradient(135deg, #64748b, #334155)', isRadio: false };
+                let trackObj = { id: 'local-' + Date.now() + Math.random(), title: cleanName, artist: "ПК", src: realPath, type: "local", cover: 'linear-gradient(135deg, #64748b, #334155)', isRadio: false };
                 
                 if (window.jsmediatags) {
                   window.jsmediatags.read(file, {
@@ -1309,7 +1386,6 @@
       addBtn.innerText = "Добавить";
     });
 
-    window.addEventListener('click', () => { ctxMenu.style.display = 'none'; });
     document.getElementById('ctxPlay').addEventListener('click', () => { if (rightClickedTrackIndex !== null) loadTrack(rightClickedTrackIndex); });
     document.getElementById('ctxCopy').addEventListener('click', () => { if (rightClickedTrackIndex !== null) navigator.clipboard.writeText(playlist[rightClickedTrackIndex].src); });
     
