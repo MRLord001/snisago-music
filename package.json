@@ -1,11 +1,11 @@
 {
   "name": "snisago-music",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Десктопный музыкальный плеер Snisago Music на Electron",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "dist": "electron-builder --win"
+    "dist": "electron-builder --win -p never"
   },
   "keywords": [
     "music",
