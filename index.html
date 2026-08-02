@@ -55,10 +55,7 @@
       animation: pulseLogo 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
     }
     .splash-text { color: var(--text-muted); font-size: 14px; letter-spacing: 4px; font-weight: 600; }
-    @keyframes pulseLogo {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.05); opacity: 0.7; }
-    }
+    @keyframes pulseLogo { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.7; } }
 
     /* БОКОВАЯ ПАНЕЛЬ */
     .sidebar {
@@ -89,7 +86,7 @@
     .top-bar { display: flex; padding: 20px 30px; gap: 15px; align-items: center; position: sticky; top: 0; background: rgba(9, 9, 11, 0.8); backdrop-filter: blur(15px); z-index: 10; border-bottom: 1px solid var(--border-color); opacity: var(--app-opacity); }
     .search-input, .url-input { background: rgba(255, 255, 255, 0.05); border: 1px solid transparent; border-radius: 20px; padding: 10px 20px; color: var(--text-main); font-size: 14px; outline: none; transition: all 0.3s; }
     .search-input { flex: 1; }
-    .url-input { width: 300px; }
+    .url-input { width: 350px; }
     .search-input:focus, .url-input:focus { background: rgba(255, 255, 255, 0.08); border-color: rgba(139, 92, 246, 0.5); box-shadow: 0 0 15px rgba(139, 92, 246, 0.1); }
     .btn-add { background: var(--accent); color: #fff; border: none; padding: 10px 20px; border-radius: 20px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; min-width: 100px; }
     .btn-add:hover { filter: brightness(1.2); transform: scale(1.05); }
@@ -101,10 +98,10 @@
 
     /* СПИСОК ТРЕКОВ */
     .music-section { padding: 20px 30px 40px 30px; opacity: var(--app-opacity); }
-    .music-section h2 { font-size: 28px; font-weight: 700; margin-bottom: 20px; letter-spacing: -0.5px; color: var(--text-main); }
+    .music-section h2 { font-size: 28px; font-weight: 700; margin-bottom: 20px; letter-spacing: -0.5px; color: var(--text-main); display: flex; align-items: center; justify-content: space-between; }
     .track-list { display: flex; flex-direction: column; gap: 8px; }
     
-    .track-row { display: flex; align-items: center; padding: 10px 15px; border-radius: 10px; cursor: pointer; transition: background 0.2s, opacity 0.2s, border 0.2s; border: 1px solid transparent; }
+    .track-row { display: flex; align-items: center; padding: 10px 15px; border-radius: 10px; cursor: pointer; transition: background 0.2s, opacity 0.2s, border 0.2s; border: 1px solid transparent; position: relative; }
     .track-row:hover { background: rgba(255, 255, 255, 0.05); }
     .track-row.active-track { background: rgba(255, 255, 255, 0.1); border: 1px solid var(--accent); }
     .track-row.sortable-ghost { opacity: 0.4; background: rgba(139, 92, 246, 0.2); }
@@ -124,7 +121,12 @@
     .drag-handle:hover { color: var(--text-main); }
     .drag-handle:active { cursor: grabbing; }
 
-    .fav-btn-svg { width: 22px; height: 22px; fill: none; stroke: var(--text-muted); stroke-width: 2; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; margin-left: auto; }
+    /* Ховер-кнопка добавления в плейлист */
+    .quick-add-btn { background: rgba(139, 92, 246, 0.2); border: 1px solid var(--accent); color: #fff; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; transition: all 0.2s; margin-right: 15px; }
+    .track-row:hover .quick-add-btn { opacity: 1; }
+    .quick-add-btn:hover { background: var(--accent); transform: scale(1.1); }
+
+    .fav-btn-svg { width: 22px; height: 22px; fill: none; stroke: var(--text-muted); stroke-width: 2; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
     .fav-btn-svg:hover { stroke: #ec4899; transform: scale(1.15); }
     .fav-btn-svg.active { fill: #ec4899; stroke: #ec4899; }
 
@@ -154,8 +156,7 @@
     
     input[type=range] { 
       -webkit-appearance: none; width: 100%; height: 6px; 
-      background: rgba(255,255,255,0.25); border-radius: 4px; cursor: pointer; outline: none; transition: opacity 0.2s;
-      pointer-events: auto;
+      background: rgba(255,255,255,0.25); border-radius: 4px; cursor: pointer; outline: none; transition: opacity 0.2s; pointer-events: auto;
     }
     input[type=range]::-webkit-slider-thumb { 
       -webkit-appearance: none; height: 14px; width: 14px; border-radius: 50%; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.5); opacity: 0; transition: opacity 0.2s, transform 0.1s; 
@@ -167,7 +168,7 @@
     .volume-controls { display: flex; align-items: center; gap: 10px; width: 30%; justify-content: flex-end; pointer-events: auto; }
     .volume-controls input { width: 100px; }
 
-    /* МИНИ-ПЛЕЕР */
+    /* МИНИ-ПЛЕЕР - ИСПРАВЛЕНА КНОПКА ВЫХОДА */
     body.mini-player-mode .app-container { display: none !important; }
     body.mini-player-mode .now-playing-overlay { display: none !important; }
     
@@ -188,18 +189,16 @@
     body.mini-player-mode .buttons { gap: 15px; margin-bottom: 5px; justify-content: center; }
     body.mini-player-mode .progress-container span { display: none !important; }
     
-    body.mini-player-mode .volume-controls svg { display: none !important; }
-    body.mini-player-mode .volume-controls input[type=range] { display: none !important; }
-    
-    /* Кнопка выхода из мини-плеера */
     body.mini-player-mode .volume-controls {
-      position: absolute; top: 15px; right: 15px; width: auto; 
+      position: absolute !important; top: 15px !important; right: 15px !important; width: auto !important; 
       display: flex !important;
-      -webkit-app-region: no-drag; /* ОЧЕНЬ ВАЖНО: Разрешаем клики */
-      pointer-events: auto;
-      z-index: 10005;
+      -webkit-app-region: no-drag !important; /* Отключаем перетаскивание зоны кнопки */
+      pointer-events: auto !important;
+      z-index: 10005 !important;
     }
-    body.mini-player-mode #btnMiniPlayer { margin: 0; color: var(--accent); transform: scale(1.1); pointer-events: auto; }
+    body.mini-player-mode .volume-controls svg,
+    body.mini-player-mode .volume-controls input[type=range] { display: none !important; }
+    body.mini-player-mode #btnMiniPlayer { margin: 0; color: var(--accent); transform: scale(1.1); pointer-events: auto !important; cursor: pointer; }
 
     /* ПОЛНОЭКРАННЫЙ РЕЖИМ */
     .now-playing-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: calc(100vh - 90px); z-index: 150; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); transform: translateY(100%); overflow: hidden; background: #09090b; }
@@ -221,13 +220,13 @@
     .home-greeting { font-size: 42px; font-weight: 800; color: var(--text-main); margin-bottom: 5px; letter-spacing: -1px; }
     .home-subtitle { color: var(--text-muted); font-size: 15px; margin-bottom: 40px; }
     
-    .news-card { background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(59, 130, 246, 0.15)); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 16px; padding: 25px; margin-bottom: 40px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; }
+    .news-card { background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(59, 130, 246, 0.15)); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 16px; padding: 25px; margin-bottom: 20px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; }
     .news-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(139, 92, 246, 0.2); }
-    .news-card::after { content: "Новое"; position: absolute; top: 15px; right: 15px; background: var(--accent); color: #fff; font-size: 11px; font-weight: bold; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; }
+    .news-card::after { content: "Обновление"; position: absolute; top: 15px; right: 15px; background: var(--accent); color: #fff; font-size: 11px; font-weight: bold; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; }
     .news-title { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 8px; }
     .news-desc { font-size: 14px; color: rgba(255,255,255,0.8); line-height: 1.5; }
 
-    .home-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 45px; }
+    .home-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 45px; margin-top: 30px; }
     .home-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 20px; padding: 25px; cursor: pointer; transition: all 0.3s ease; backdrop-filter: blur(10px); display: flex; flex-direction: column; }
     .home-card:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255,255,255,0.2); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
     .card-icon { font-size: 28px; margin-bottom: 15px; background: rgba(255,255,255,0.05); width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); }
@@ -282,27 +281,42 @@
     .btn-settings-danger { padding: 12px 24px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 8px; color: #ef4444; font-weight: 600; cursor: pointer; transition: all 0.2s; width: 100%; margin-top: 20px; font-size: 14px; }
     .btn-settings-danger:hover { background: rgba(239, 68, 68, 0.2); color: #f87171; }
 
-    /* ЛИЦЕНЗИОННОЕ СОГЛАШЕНИЕ (МОДАЛЬНОЕ ОКНО) */
-    #eulaModal { display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.9); z-index:25000; align-items:center; justify-content:center; backdrop-filter:blur(15px); }
-    .eula-container { background: var(--player-bg); border: 1px solid var(--border-color); border-radius: 16px; width: 600px; max-width: 90vw; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.8); }
-    .eula-header { padding: 25px 30px; border-bottom: 1px solid var(--border-color); background: rgba(0,0,0,0.3); }
-    .eula-header h2 { color: #fff; font-size: 22px; font-weight: 700; margin: 0; }
-    .eula-body { padding: 30px; max-height: 50vh; overflow-y: auto; color: var(--text-muted); font-size: 14px; line-height: 1.6; }
-    .eula-body strong { color: #fff; }
-    .eula-footer { padding: 20px 30px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 15px; background: rgba(0,0,0,0.2); }
-    .btn-eula-accept { background: var(--accent); color: #fff; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; }
-    .btn-eula-accept:hover { filter: brightness(1.2); }
-    .btn-eula-close { background: rgba(255,255,255,0.1); color: #fff; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; display: none; }
-    .btn-eula-close:hover { background: rgba(255,255,255,0.15); }
+    /* МОДАЛЬНЫЕ ОКНА */
+    .modal-overlay { display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.8); z-index:25000; align-items:center; justify-content:center; backdrop-filter:blur(10px); }
+    .modal-container { background: var(--player-bg); border: 1px solid var(--border-color); border-radius: 16px; width: 600px; max-width: 90vw; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.8); }
+    .modal-header { padding: 25px 30px; border-bottom: 1px solid var(--border-color); background: rgba(0,0,0,0.3); }
+    .modal-header h2 { color: #fff; font-size: 22px; font-weight: 700; margin: 0; }
+    .modal-body { padding: 30px; max-height: 50vh; overflow-y: auto; color: var(--text-muted); font-size: 14px; line-height: 1.6; }
+    .modal-footer { padding: 20px 30px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 15px; background: rgba(0,0,0,0.2); }
+    .btn-primary { background: var(--accent); color: #fff; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .btn-primary:hover { filter: brightness(1.2); }
 
-    /* МОДАЛКА НОВОСТЕЙ */
-    #newsModal { display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.8); z-index:20000; align-items:center; justify-content:center; backdrop-filter:blur(5px); }
+    /* ОБНОВЛЕННОЕ КОНТЕКСТНОЕ МЕНЮ */
+    .glass-ctx-menu { 
+        display: none; position: fixed; background: rgba(20, 20, 25, 0.85); backdrop-filter: blur(25px); 
+        border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); 
+        z-index: 21000; padding: 8px; width: 240px; 
+    }
+    .ctx-item { 
+        display: flex; align-items: center; gap: 12px; padding: 12px 14px; font-size: 14px; color: #fff; 
+        cursor: pointer; border-radius: 8px; transition: all 0.15s ease; font-weight: 500;
+    }
+    .ctx-item svg { width: 18px; height: 18px; flex-shrink: 0; }
+    .ctx-item:hover { background: rgba(255,255,255,0.1); transform: translateX(3px); }
+    .ctx-item.accent:hover { background: rgba(139, 92, 246, 0.15); color: var(--accent); }
+    .ctx-item.accent svg { stroke: var(--accent); }
+    .ctx-item.favorite svg { stroke: #ec4899; }
+    .ctx-item.favorite:hover { background: rgba(236, 72, 153, 0.15); color: #ec4899; }
+    .ctx-item.danger svg { stroke: #ef4444; }
+    .ctx-item.danger:hover { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+    .ctx-divider { height: 1px; background: rgba(255,255,255,0.08); margin: 6px 0; }
 
-    /* МОДАЛКА ВЫБОРА ПЛЕЙЛИСТА (ДЛЯ КОНТЕКСТНОГО МЕНЮ) */
-    #addToPlaylistModal { display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.8); z-index:20000; align-items:center; justify-content:center; backdrop-filter:blur(5px); }
+    /* ВЫБОР ПЛЕЙЛИСТА (ДЛЯ КОНТЕКСТНОГО МЕНЮ И ХОВЕРА) */
     .pl-picker-container { background: var(--player-bg); border: 1px solid var(--border-color); border-radius: 12px; width: 300px; padding: 20px; }
-    .pl-picker-btn { width: 100%; text-align: left; padding: 12px 15px; background: rgba(255,255,255,0.05); border: none; border-radius: 8px; color: #fff; margin-bottom: 8px; cursor: pointer; font-size: 14px; transition: 0.2s; }
+    .pl-picker-btn { width: 100%; text-align: left; padding: 12px 15px; background: rgba(255,255,255,0.05); border: none; border-radius: 8px; color: #fff; margin-bottom: 8px; cursor: pointer; font-size: 14px; transition: 0.2s; display: flex; align-items: center; gap: 10px; }
+    .pl-picker-btn svg { width: 18px; height: 18px; stroke: var(--text-muted); }
     .pl-picker-btn:hover { background: rgba(139, 92, 246, 0.2); color: var(--accent); }
+    .pl-picker-btn:hover svg { stroke: var(--accent); }
 
     body.hide-radio #menuBlockRadio { display: none !important; }
     body.hide-playlists #menuBlockPlaylists { display: none !important; }
@@ -327,54 +341,50 @@
   </div>
 
   <!-- ЛИЦЕНЗИОННОЕ СОГЛАШЕНИЕ (EULA) -->
-  <div id="eulaModal">
-    <div class="eula-container">
-      <div class="eula-header">
-        <h2>Лицензионное соглашение</h2>
-      </div>
-      <div class="eula-body">
+  <div id="eulaModal" class="modal-overlay">
+    <div class="modal-container">
+      <div class="modal-header"><h2>Лицензионное соглашение</h2></div>
+      <div class="modal-body">
         <strong>Условия использования Snisago Music</strong><br><br>
-        Настоящее Лицензионное соглашение (далее — «Соглашение») является юридическим документом, заключаемым между вами (физическим лицом) и разработчиком программного обеспечения Snisago Music.<br><br>
+        Настоящее Лицензионное соглашение является юридическим документом, заключаемым между вами и разработчиком ПО Snisago Music.<br><br>
         <strong>1. Общие положения</strong><br>
-        Устанавливая, копируя или иным образом используя приложение Snisago Music, вы подтверждаете свое согласие с условиями данного Соглашения. Если вы не согласны с условиями, не используйте данное программное обеспечение.<br><br>
+        Устанавливая или используя приложение, вы подтверждаете свое согласие с условиями данного Соглашения.<br><br>
         <strong>2. Лицензия на использование</strong><br>
-        Разработчик предоставляет вам персональную, неисключительную, непередаваемую лицензию на использование приложения в личных некоммерческих целях. Вы не имеете права продавать, сдавать в аренду или сублицензировать данное ПО.<br><br>
+        Разработчик предоставляет вам персональную, неисключительную лицензию на использование приложения в личных некоммерческих целях.<br><br>
         <strong>3. Отказ от ответственности</strong><br>
-        Программное обеспечение предоставляется «как есть» (AS IS). Разработчик не несет ответственности за любой ущерб, потерю данных или упущенную выгоду, возникшие в результате использования или невозможности использования приложения. Поиск и воспроизведение аудиоматериалов из открытых источников осуществляется пользователем под свою ответственность.<br><br>
+        ПО предоставляется «как есть» (AS IS). Поиск и воспроизведение аудиоматериалов из открытых источников осуществляется пользователем под свою ответственность.<br><br>
         <strong>4. Изменения условий</strong><br>
-        Разработчик оставляет за собой право вносить изменения в логику работы плеера, добавлять или удалять функции через систему автоматических обновлений без предварительного уведомления пользователя.
+        Разработчик оставляет за собой право вносить изменения в логику работы плеера и обновлять его функции.
       </div>
-      <div class="eula-footer">
-        <button id="btnAcceptEula" class="btn-eula-accept">Принять и продолжить</button>
-        <button id="btnCloseEula" class="btn-eula-close">Закрыть окно</button>
+      <div class="modal-footer">
+        <button id="btnAcceptEula" class="btn-primary">Принять и продолжить</button>
+        <button id="btnCloseEula" class="btn-primary" style="display:none; background: rgba(255,255,255,0.1);">Закрыть окно</button>
       </div>
     </div>
   </div>
 
   <!-- ОКНО НОВОСТЕЙ -->
-  <div id="newsModal">
-    <div class="eula-container">
-      <div class="eula-header">
-        <h2 id="newsModalTitle">Список изменений</h2>
-      </div>
-      <div class="eula-body" id="newsModalBody" style="color:#fff; font-size:15px;"></div>
-      <div class="eula-footer">
-        <button class="btn-eula-accept" onclick="document.getElementById('newsModal').style.display='none'">Понятно</button>
+  <div id="newsModal" class="modal-overlay">
+    <div class="modal-container">
+      <div class="modal-header"><h2 id="newsModalTitle">Список изменений</h2></div>
+      <div class="modal-body" id="newsModalBody" style="color:#fff; font-size:15px;"></div>
+      <div class="modal-footer">
+        <button class="btn-primary" onclick="document.getElementById('newsModal').style.display='none'">Понятно</button>
       </div>
     </div>
   </div>
 
-  <!-- ВЫБОР ПЛЕЙЛИСТА (ДЛЯ КОНТЕКСТНОГО МЕНЮ) -->
-  <div id="addToPlaylistModal">
+  <!-- ВЫБОР ПЛЕЙЛИСТА -->
+  <div id="addToPlaylistModal" class="modal-overlay" style="z-index: 22000;">
     <div class="pl-picker-container">
       <h3 style="color:#fff; margin-bottom:15px; font-size:16px;">Добавить в плейлист:</h3>
       <div id="plPickerList" style="max-height: 300px; overflow-y:auto;"></div>
-      <button onclick="document.getElementById('addToPlaylistModal').style.display='none'" style="width:100%; padding:10px; background:transparent; color:var(--muted); border:none; cursor:pointer; margin-top:10px;">Отмена</button>
+      <button onclick="document.getElementById('addToPlaylistModal').style.display='none'" style="width:100%; padding:10px; background:transparent; color:var(--text-muted); border:none; cursor:pointer; margin-top:10px; border-radius: 8px;">Отмена</button>
     </div>
   </div>
 
   <!-- ОКНО АВТООБНОВЛЕНИЙ -->
-  <div id="updateModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.85); z-index:10000; align-items:center; justify-content:center; backdrop-filter:blur(10px);">
+  <div id="updateModal" class="modal-overlay">
     <div style="background:var(--player-bg); padding:30px; border-radius:16px; border:1px solid var(--accent); width:350px; text-align:center; box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);">
       <div style="font-size:40px; margin-bottom:10px;">🚀</div>
       <h3 style="color:#fff; margin-bottom:10px; font-size:20px;">Внимание! Старая версия</h3>
@@ -386,11 +396,13 @@
     </div>
   </div>
 
-  <div id="updateStatusModal" style="display:none; position:fixed; top:20px; right:20px; background:var(--player-bg); padding:15px 25px; border-radius:12px; border:1px solid var(--accent); z-index:10001; box-shadow: 0 4px 20px rgba(0,0,0,0.5); backdrop-filter:blur(10px);">
-      <div id="updateStatusText" style="color:#fff; font-size:14px; font-weight:600;">Поиск обновлений...</div>
+  <!-- УВЕДОМЛЕНИЕ (ТОСТ) -->
+  <div id="updateStatusModal" style="display:none; position:fixed; top:20px; right:20px; background:var(--player-bg); padding:15px 25px; border-radius:12px; border:1px solid var(--accent); z-index:25000; box-shadow: 0 4px 20px rgba(0,0,0,0.5); backdrop-filter:blur(10px);">
+      <div id="updateStatusText" style="color:#fff; font-size:14px; font-weight:600;">Уведомление...</div>
   </div>
 
-  <div id="playlistModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.8); z-index:9999; align-items:center; justify-content:center; backdrop-filter:blur(5px);">
+  <!-- СОЗДАНИЕ ПЛЕЙЛИСТА -->
+  <div id="playlistModal" class="modal-overlay">
     <div style="background:var(--player-bg); padding:30px; border-radius:16px; border:1px solid var(--border-color); width:350px; text-align:center;">
         <h3 style="color:#fff; margin-bottom:15px; font-size:18px;">Новый плейлист</h3>
         <input type="text" id="playlistNameInput" style="width:100%; padding:12px; background:rgba(255,255,255,0.05); border:1px solid var(--border-color); border-radius:8px; color:#fff; outline:none; margin-bottom:20px; font-size:14px;" placeholder="Введите название...">
@@ -452,9 +464,10 @@
           <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
         </button>
         <input type="text" placeholder="Искать в плейлисте или по всему миру..." class="search-input" id="searchBox">
-        <input type="text" placeholder="Ссылка на YouTube или MP3 поток..." class="url-input" id="urlBox">
+        <!-- Расширенный плейсхолдер URL -->
+        <input type="text" placeholder="Ссылка на YouTube, VK, SC, TikTok, Spotify..." class="url-input" id="urlBox">
         <button class="btn-add" id="btnAddUrl">Добавить</button>
-        <button class="btn-add" id="btnLoadLocalFile" style="background: #3b82f6; margin-left: 5px;" title="Загрузить локальные треки (mp3, wav)">Загрузить с ПК</button>
+        <button class="btn-add" id="btnLoadLocalFile" style="background: #3b82f6; margin-left: 5px;" title="Загрузить локальные треки (mp3, wav)">С ПК</button>
         <input type="file" id="localAudioFiles" multiple accept=".mp3,.wav,.ogg,.flac,.m4a" style="display:none;">
       </header>
 
@@ -536,17 +549,32 @@
 
   <audio id="audioEngine"></audio>
 
-  <div id="customContextMenu" style="display: none; position: fixed; background: rgba(20, 20, 25, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 1000; padding: 5px 0; width: 220px;">
-    <div id="ctxPlay" style="padding: 12px 15px; font-size: 13px; color: #fff; cursor: pointer;">▶ Воспроизвести</div>
-    <div id="ctxFavorite" style="padding: 12px 15px; font-size: 13px; color: #ec4899; cursor: pointer;">❤️ В избранное</div>
-    <div id="ctxAddToPlaylistBtn" style="padding: 12px 15px; font-size: 13px; color: #3b82f6; cursor: pointer;">➕ В плейлист...</div>
-    <div id="ctxCopy" style="padding: 12px 15px; font-size: 13px; color: #94a3b8; cursor: pointer;">📋 Копировать ссылку</div>
-    <div style="height: 1px; background: rgba(255,255,255,0.05); margin: 5px 0;"></div>
-    <div id="ctxDelete" style="padding: 12px 15px; font-size: 13px; color: #ef4444; cursor: pointer;">× Удалить</div>
+  <!-- КРАСИВОЕ КОНТЕКСТНОЕ МЕНЮ (GLASSMORPHISM) -->
+  <div id="customContextMenu" class="glass-ctx-menu">
+    <div id="ctxPlay" class="ctx-item">
+      <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M8 5v14l11-7z"/></svg> 
+      Воспроизвести
+    </div>
+    <div id="ctxFavorite" class="ctx-item favorite">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg> 
+      В избранное
+    </div>
+    <div id="ctxAddToPlaylistBtn" class="ctx-item accent">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> 
+      В плейлист...
+    </div>
+    <div id="ctxCopy" class="ctx-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> 
+      Копировать ссылку
+    </div>
+    <div class="ctx-divider"></div>
+    <div id="ctxDelete" class="ctx-item danger">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> 
+      Удалить
+    </div>
   </div>
 
   <script>
-    // --- ПЕРВОНАЧАЛЬНАЯ ЗАГРУЗКА И EULA ---
     window.addEventListener('load', () => {
       setTimeout(() => {
         const splash = document.getElementById('splashScreen');
@@ -554,32 +582,32 @@
         splash.style.visibility = 'hidden';
         setTimeout(() => splash.remove(), 600);
         
-        // Проверка лицензионного соглашения после загрузки
         if (!localStorage.getItem('snisago_eula_accepted')) {
             document.getElementById('eulaModal').style.display = 'flex';
         }
       }, 1500); 
     });
 
-    // Принятие EULA
     document.getElementById('btnAcceptEula').addEventListener('click', () => {
         localStorage.setItem('snisago_eula_accepted', 'true');
         document.getElementById('eulaModal').style.display = 'none';
     });
-    document.getElementById('btnCloseEula').addEventListener('click', () => {
-        document.getElementById('eulaModal').style.display = 'none';
-    });
+    document.getElementById('btnCloseEula').addEventListener('click', () => { document.getElementById('eulaModal').style.display = 'none'; });
 
     const { webUtils, ipcRenderer } = require('electron');
-    // Динамическая версия из package.json (если доступна) или хардкод для визуала
-    const APP_VERSION = "1.1.5"; 
+    const APP_VERSION = "1.1.9"; // ОНБОВЛЕННАЯ ВЕРСИЯ
 
-    // БАЗА НОВОСТЕЙ
+    // ИСТОРИЯ ОБНОВЛЕНИЙ
     const appNews = [
         { 
-            version: "1.1.5", 
+            version: "1.1.9", 
+            title: "Шеринг, Ссылки и Мини-плеер!", 
+            details: "• <b>Исправлен баг мини-плеера:</b> теперь из него легко выйти.<br>• <b>Продвинутое Контекстное Меню:</b> обновлен дизайн в стиле Glassmorphism.<br>• <b>Шеринг плейлистов:</b> делитесь своей музыкой с друзьями по коду!<br>• <b>Кнопка быстрого добавления (+):</b> появляется при наведении на трек.<br>• <b>Поддержка ссылок:</b> yt-dlp теперь пытается обработать ссылки со всех популярных площадок (VK, SC, Yandex, TikTok и др.). <i>Примечание: Spotify/Apple Music могут не работать из-за DRM-защиты.</i>"
+        },
+        { 
+            version: "1.1.8", 
             title: "Глобальное обновление кастомизации!", 
-            details: "• Добавлена продвинутая система перетаскивания треков (SortableJS)<br>• Новое Лицензионное Соглашение (EULA)<br>• Исправлен баг с выходом из мини-плеера<br>• Добавлена функция быстрого переноса трека в плейлист по правому клику<br>• Отображение новостей на главном экране<br>• Переход на установку в один клик (Тихая установка)."
+            details: "• Добавлена продвинутая система перетаскивания треков (SortableJS)<br>• Новое Лицензионное Соглашение (EULA)<br>• Добавлена функция быстрого переноса трека в плейлист по правому клику<br>• Отображение новостей на главном экране<br>• Переход на установку в один клик (Тихая установка)."
         }
     ];
 
@@ -732,16 +760,6 @@
       { id: "rec-112", title: "Record «Christmas Chill»", artist: "Radio Record", src: "https://radiorecord.hostingradio.ru/christmaschill96.aacp", type: "web", isRadio: true, category: "record", cover: "linear-gradient(135deg, #f43f5e, #311042)" }
     ];
 
-    gistRadioStations.forEach(station => {
-      if (station.cover && station.cover.includes('linear-gradient')) {
-        const colors = station.cover.match(/#[0-9a-fA-F]{3,6}/g) || ['#3b82f6', '#8b5cf6'];
-        const c1 = colors[0], c2 = colors[1] || colors[0];
-        const letters = getLetters(station.title);
-        const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300"><defs><linearGradient id="grad_${station.id}" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="${c1}" /><stop offset="100%" stop-color="${c2}" /></linearGradient></defs><rect width="300" height="300" fill="url(#grad_${station.id})" /><circle cx="150" cy="150" r="110" fill="#ffffff" fill-opacity="0.05" /><circle cx="150" cy="150" r="85" fill="#ffffff" fill-opacity="0.05" /><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" fill="#ffffff" font-family="system-ui, -apple-system, sans-serif" font-size="80" font-weight="800" letter-spacing="-2">${letters}</text></svg>`;
-        station.cover = "data:image/svg+xml;base64," + window.btoa(unescape(encodeURIComponent(svg)));
-      }
-    });
-
     let radioDatabase = [...gistRadioStations]; 
     let playlist = []; 
     let isPlaying = false;
@@ -751,7 +769,8 @@
     let isShuffle = false;
     let repeatMode = 0; 
     let assigningHotkey = null;
-    let trackSortableInstance = null; // Для управления SortableJS списка песен
+    let trackSortableInstance = null;
+    let targetQuickAddTrackIndex = null; // Для быстрой кнопки +
 
     function formatKey(code) {
         if (!code) return 'Не задано';
@@ -916,6 +935,15 @@
         plModal.style.display = 'none';
     });
 
+    // ШЕРИНГ ПЛЕЙЛИСТА
+    window.exportPlaylist = function(plId) {
+        const pl = customPlaylists.find(p => p.id === plId);
+        if(!pl) return;
+        const code = btoa(unescape(encodeURIComponent(JSON.stringify(pl))));
+        navigator.clipboard.writeText("snisago-pl://" + code);
+        showUpdateNotification(`Ссылка на плейлист "${pl.name}" скопирована!`);
+    }
+
     function renderPlaylistsSidebar() {
       const container = document.getElementById('playlistList');
       container.innerHTML = '';
@@ -949,10 +977,7 @@
     }
 
     function displayTracksUI() {
-      if (trackSortableInstance) {
-        trackSortableInstance.destroy();
-        trackSortableInstance = null;
-      }
+      if (trackSortableInstance) { trackSortableInstance.destroy(); trackSortableInstance = null; }
       trackListContainer.innerHTML = '';
       
       const searchQuery = document.getElementById('searchBox').value.toLowerCase().trim();
@@ -970,11 +995,26 @@
         let coverHtml = track.cover.startsWith('http') || track.cover.startsWith('data:image') ? `<img src="${track.cover}" style="width: 46px; height: 46px; border-radius: 8px; flex-shrink:0; object-fit: cover;">` : `<div class="letter-cover" style="background: ${track.cover};">${getLetters(track.title)}</div>`;
         const isFav = favoriteTracks.some(f => f.src === track.src);
         const heartIcon = `<svg class="fav-btn-svg ${isFav ? 'active' : ''}" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`;
+        const quickAddIcon = `<button class="quick-add-btn" title="Добавить в плейлист"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>`;
 
-        row.innerHTML = `${handleHtml}${coverHtml}<div class="track-meta"><div class="title">${track.title}</div><div class="artist">${track.artist} <span class="source-badge ${track.type === 'local' ? 'badge-local' : 'badge-web'}">${(track.isRadio || track.title.includes('ФМ') || track.title.includes('Радио')) ? 'LIVE' : track.type.toUpperCase()}</span></div></div><div class="fav-action-wrapper" style="padding: 10px; display: flex; align-items: center; justify-content: center; margin-left: auto;" title="В избранное">${heartIcon}</div>`;
+        row.innerHTML = `${handleHtml}${coverHtml}<div class="track-meta"><div class="title">${track.title}</div><div class="artist">${track.artist} <span class="source-badge ${track.type === 'local' ? 'badge-local' : 'badge-web'}">${(track.isRadio || track.title.includes('ФМ') || track.title.includes('Радио')) ? 'LIVE' : track.type.toUpperCase()}</span></div></div>${quickAddIcon}<div class="fav-action-wrapper" style="padding: 10px; display: flex; align-items: center; justify-content: center;" title="В избранное">${heartIcon}</div>`;
 
-        row.addEventListener('click', (e) => { if (e.target.closest('.fav-action-wrapper') || e.target.closest('.drag-handle')) return; const exactIndex = playlist.findIndex(p => p.src === track.src); loadTrack(exactIndex); });
-        row.querySelector('.fav-action-wrapper').addEventListener('click', () => { if (!isFav) favoriteTracks.push({ ...track, isFavorite: true }); else favoriteTracks = favoriteTracks.filter(f => f.src !== track.src); saveFavorites(); if (currentFilter === 'fav') renderTracks(); else displayTracksUI(); });
+        row.addEventListener('click', (e) => { 
+            if (e.target.closest('.fav-action-wrapper') || e.target.closest('.drag-handle') || e.target.closest('.quick-add-btn')) return; 
+            const exactIndex = playlist.findIndex(p => p.src === track.src); loadTrack(exactIndex); 
+        });
+        
+        row.querySelector('.fav-action-wrapper').addEventListener('click', () => { 
+            if (!isFav) favoriteTracks.push({ ...track, isFavorite: true }); 
+            else favoriteTracks = favoriteTracks.filter(f => f.src !== track.src); 
+            saveFavorites(); 
+            if (currentFilter === 'fav') renderTracks(); else displayTracksUI(); 
+        });
+
+        row.querySelector('.quick-add-btn').addEventListener('click', () => {
+            rightClickedTrackIndex = playlist.findIndex(p => p.src === track.src);
+            openPlaylistPicker();
+        });
         
         row.addEventListener('contextmenu', (e) => { 
             e.preventDefault(); 
@@ -983,30 +1023,32 @@
             ctxMenu.style.left = `${e.clientX}px`; 
             ctxMenu.style.top = `${e.clientY}px`; 
             
-            document.getElementById('ctxFavorite').innerText = isFav ? "💔 Убрать из избранного" : "❤️ В избранное"; 
+            const favText = document.getElementById('ctxFavorite');
+            if(isFav) {
+                favText.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg> Убрать из избранного`;
+            } else {
+                favText.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg> В избранное`;
+            }
             
             if (currentFilter.startsWith('playlist_')) {
-                document.getElementById('ctxDelete').innerText = "× Убрать из плейлиста";
+                document.getElementById('ctxDelete').innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Убрать из плейлиста`;
             } else {
-                document.getElementById('ctxDelete').innerText = "× Удалить"; 
+                document.getElementById('ctxDelete').innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Удалить`; 
             }
         });
         
         trackListContainer.appendChild(row);
       });
 
-      // Активация SortableJS для треков
       if (canReorder) {
         trackSortableInstance = Sortable.create(trackListContainer, {
-            animation: 150,
-            handle: '.drag-handle', // Перетаскиваем только за иконку
+            animation: 150, handle: '.drag-handle',
             onEnd: function (evt) {
                 let targetArray = currentFilter === 'myMusic' ? myMusicTracks : customPlaylists.find(p => `playlist_${p.id}` === currentFilter).tracks;
                 const movedTrack = targetArray.splice(evt.oldIndex, 1)[0];
                 targetArray.splice(evt.newIndex, 0, movedTrack);
-                
                 if (currentFilter === 'myMusic') saveMyMusic(); else savePlaylists();
-                playlist = [...targetArray]; // Синхронизируем текущий плейлист
+                playlist = [...targetArray]; 
             }
         });
       }
@@ -1014,7 +1056,7 @@
 
     function showNews(index) {
         const news = appNews[index];
-        document.getElementById('newsModalTitle').innerText = news.title;
+        document.getElementById('newsModalTitle').innerText = `Версия ${news.version} - ${news.title}`;
         document.getElementById('newsModalBody').innerHTML = news.details;
         document.getElementById('newsModal').style.display = 'flex';
     }
@@ -1027,10 +1069,9 @@
         document.getElementById('appTopBar').style.display = 'none'; 
         document.getElementById('visualizerWrapper').style.display = 'none';
 
-        // Генерация новостей
         let newsHtml = '';
         appNews.forEach((news, idx) => {
-            newsHtml += `<div class="news-card" onclick="showNews(${idx})"><div class="news-title">${news.title}</div><div class="news-desc">Кликните, чтобы прочитать полный список изменений версии ${news.version}</div></div>`;
+            newsHtml += `<div class="news-card" onclick="showNews(${idx})"><div class="news-title">${news.version}: ${news.title}</div><div class="news-desc">Кликните, чтобы прочитать список изменений.</div></div>`;
         });
 
         let historyHtml = '';
@@ -1048,7 +1089,9 @@
         <div class="home-dashboard">
             <h1 class="home-greeting">Добро пожаловать</h1>
             <p class="home-subtitle">Музыкальная библиотека готова к работе. С чего начнем сегодня?</p>
-            ${newsHtml}
+            <h3 style="color:#fff; margin-bottom:15px;">История обновлений</h3>
+            <div style="display:flex; gap:15px; overflow-x:auto; padding-bottom:10px;">${newsHtml}</div>
+            
             <div class="home-cards">
                 <div class="home-card" onclick="document.getElementById('menuTrackSearch').click()"><div class="card-icon">🌍</div><div class="card-title">Глобальный поиск</div><div class="card-desc">Ищите миллионы треков по всему интернету</div></div>
                 <div class="home-card" onclick="document.getElementById('menuMyMusic').click()"><div class="card-icon">🎧</div><div class="card-title">Моя музыка</div><div class="card-desc">Все добавленные вами треки и локальные файлы</div></div>
@@ -1079,10 +1122,7 @@
           <div class="settings-body">
             
             <div class="setting-row">
-              <div class="setting-info">
-                <div class="setting-title">Тема оформления (База)</div>
-                <div class="setting-desc">Выберите базовый стиль интерфейса плеера</div>
-              </div>
+              <div class="setting-info"><div class="setting-title">Тема оформления (База)</div></div>
               <div class="pills-group">
                 <div class="pill ${configTheme === 'glass' ? 'active' : ''}" data-theme="glass">Dark Glass</div>
                 <div class="pill ${configTheme === 'oled' ? 'active' : ''}" data-theme="oled">OLED Black</div>
@@ -1096,85 +1136,43 @@
                     <button class="btn-add" id="btnBrowseBg" style="border-radius: 8px; padding: 10px 15px;">📁 Файл</button>
                     <input type="file" id="fileInputBg" accept="image/png, image/jpeg, image/webp, image/gif" style="display: none;">
                 </div>
-                <span style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">Вставьте URL или загрузите картинку с компьютера.</span>
             </div>
 
             <div class="setting-row">
-              <div class="setting-info">
-                <div class="setting-title">Цветовая палитра</div>
-                <div class="setting-desc">Изменить свои цвета интерфейса плеера</div>
-              </div>
+              <div class="setting-info"><div class="setting-title">Цветовая палитра</div></div>
               <div style="display:flex; gap:20px;">
-                <div style="text-align:center;">
-                    <div class="color-picker-wrapper"><input type="color" id="colorAccent" value="${appConfig.accent}"></div>
-                    <div style="font-size:11px; margin-top:5px; color:var(--text-muted);">Акцент</div>
-                </div>
-                <div style="text-align:center;">
-                    <div class="color-picker-wrapper"><input type="color" id="colorText" value="${appConfig.text}"></div>
-                    <div style="font-size:11px; margin-top:5px; color:var(--text-muted);">Текст</div>
-                </div>
-                <div style="text-align:center;">
-                    <div class="color-picker-wrapper"><input type="color" id="colorBg" value="${appConfig.bg}"></div>
-                    <div style="font-size:11px; margin-top:5px; color:var(--text-muted);">Фон</div>
-                </div>
+                <div style="text-align:center;"><div class="color-picker-wrapper"><input type="color" id="colorAccent" value="${appConfig.accent}"></div></div>
+                <div style="text-align:center;"><div class="color-picker-wrapper"><input type="color" id="colorText" value="${appConfig.text}"></div></div>
+                <div style="text-align:center;"><div class="color-picker-wrapper"><input type="color" id="colorBg" value="${appConfig.bg}"></div></div>
               </div>
             </div>
 
-            <div class="setting-row">
-              <div class="setting-info">
-                <div class="setting-title">Прозрачность панелей</div>
-                <div class="setting-desc">Настройте общую прозрачность бокового меню и плеера</div>
-              </div>
-              <input type="range" class="settings-slider" id="rangeOpacity" min="0.1" max="1" step="0.05" value="${appConfig.transparency}" style="max-width: 200px;">
-            </div>
-
-            <div class="setting-row" style="flex-direction:column; align-items:stretch;">
-              <div class="setting-info" style="margin-bottom:15px;">
-                <div class="setting-title">Отображение разделов</div>
-                <div class="setting-desc">Скройте папки, которыми вы не пользуетесь</div>
-              </div>
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding:0 10px;">
-                <span style="font-size:14px; color:var(--text-main);">Радиостанции</span>
-                <label class="switch"><input type="checkbox" id="chkRadio" ${appConfig.hideRadio ? 'checked' : ''}><span class="slider"></span></label>
-              </div>
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding:0 10px;">
-                <span style="font-size:14px; color:var(--text-main);">Плейлисты</span>
-                <label class="switch"><input type="checkbox" id="chkPlaylists" ${appConfig.hidePlaylists ? 'checked' : ''}><span class="slider"></span></label>
-              </div>
-              <div style="display:flex; justify-content:space-between; align-items:center; padding:0 10px;">
-                <span style="font-size:14px; color:var(--text-main);">Медиатека</span>
-                <label class="switch"><input type="checkbox" id="chkMyMusic" ${appConfig.hideMyMusic ? 'checked' : ''}><span class="slider"></span></label>
+            <div class="setting-row" style="flex-direction:column; align-items:flex-start;">
+              <div class="setting-info" style="margin-bottom:15px;"><div class="setting-title">Импорт / Экспорт (Стиль и Плейлисты)</div><div class="setting-desc">Вставьте код настроек или код плейлиста друга (snisago-pl://...)</div></div>
+              <div style="display: flex; gap: 10px; width: 100%;">
+                <input type="text" id="configCodeInput" class="settings-input" placeholder="Вставьте полученный код сюда..." style="flex:1;">
+                <button class="btn-add" id="btnApplyCode">Применить код</button>
+                <button class="btn-add" id="btnExportCode" style="background: #10b981;">Поделиться стилем</button>
               </div>
             </div>
 
             <div class="setting-row" style="flex-direction:column; align-items:stretch;">
-              <div class="setting-info" style="margin-bottom:15px;">
-                <div class="setting-title">Горячие клавиши</div>
-                <div class="setting-desc">Нажмите на кнопку и введите новую клавишу (Esc для отмены)</div>
-              </div>
-              <div class="hotkey-row">
-                <span class="label">Play / Pause</span>
-                <button class="hotkey-btn" data-action="play">${formatKey(appConfig.hotkeys.play)}</button>
-              </div>
-              <div class="hotkey-row">
-                <span class="label">Следующий трек</span>
-                <button class="hotkey-btn" data-action="next">${formatKey(appConfig.hotkeys.next)}</button>
-              </div>
-              <div class="hotkey-row">
-                <span class="label">Предыдущий трек</span>
-                <button class="hotkey-btn" data-action="prev">${formatKey(appConfig.hotkeys.prev)}</button>
-              </div>
-              <div class="hotkey-row">
-                <span class="label">Звук (Вкл / Выкл)</span>
-                <button class="hotkey-btn" data-action="mute">${formatKey(appConfig.hotkeys.mute)}</button>
-              </div>
+              <div class="setting-info" style="margin-bottom:15px;"><div class="setting-title">Отображение разделов</div></div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding:0 10px;"><span style="font-size:14px;">Радиостанции</span><label class="switch"><input type="checkbox" id="chkRadio" ${appConfig.hideRadio ? 'checked' : ''}><span class="slider"></span></label></div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding:0 10px;"><span style="font-size:14px;">Плейлисты</span><label class="switch"><input type="checkbox" id="chkPlaylists" ${appConfig.hidePlaylists ? 'checked' : ''}><span class="slider"></span></label></div>
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:0 10px;"><span style="font-size:14px;">Медиатека</span><label class="switch"><input type="checkbox" id="chkMyMusic" ${appConfig.hideMyMusic ? 'checked' : ''}><span class="slider"></span></label></div>
+            </div>
+
+            <div class="setting-row" style="flex-direction:column; align-items:stretch;">
+              <div class="setting-info" style="margin-bottom:15px;"><div class="setting-title">Горячие клавиши</div></div>
+              <div class="hotkey-row"><span class="label">Play / Pause</span><button class="hotkey-btn" data-action="play">${formatKey(appConfig.hotkeys.play)}</button></div>
+              <div class="hotkey-row"><span class="label">Следующий трек</span><button class="hotkey-btn" data-action="next">${formatKey(appConfig.hotkeys.next)}</button></div>
+              <div class="hotkey-row"><span class="label">Предыдущий трек</span><button class="hotkey-btn" data-action="prev">${formatKey(appConfig.hotkeys.prev)}</button></div>
+              <div class="hotkey-row"><span class="label">Звук (Вкл / Выкл)</span><button class="hotkey-btn" data-action="mute">${formatKey(appConfig.hotkeys.mute)}</button></div>
             </div>
 
             <div class="setting-row">
-              <div class="setting-info">
-                <div class="setting-title">Цвет аудио-волн</div>
-                <div class="setting-desc">Палитра для визуализатора спектра частот</div>
-              </div>
+              <div class="setting-info"><div class="setting-title">Цвет аудио-волн</div></div>
               <div class="color-swatches">
                 <div class="swatch ${configVisualizerColor === 'purple' ? 'active' : ''}" data-color="purple" style="background: linear-gradient(135deg, #8b5cf6, #d946ef); color: #d946ef;"></div>
                 <div class="swatch ${configVisualizerColor === 'green' ? 'active' : ''}" data-color="green" style="background: linear-gradient(135deg, #10b981, #059669); color: #059669;"></div>
@@ -1183,73 +1181,23 @@
               </div>
             </div>
 
-            <div class="setting-row">
-              <div class="setting-info">
-                <div class="setting-title">Показывать спектр в шапке</div>
-                <div class="setting-desc">Отображать верхний блок волноформы аудио на страницах списков</div>
-              </div>
-              <label class="switch"><input type="checkbox" id="toggleHeaderVis" ${configHeaderVis === 'on' ? 'checked' : ''}><span class="slider"></span></label>
-            </div>
-            
-            <div class="setting-row">
-              <div class="setting-info">
-                <div class="setting-title">Анимация спектра</div>
-                <div class="setting-desc">Отображать волноформу звука на главном экране</div>
-              </div>
-              <label class="switch"><input type="checkbox" id="toggleVis" ${configVisualizerEnabled === 'on' ? 'checked' : ''}><span class="slider"></span></label>
-            </div>
+            <div class="setting-row"><div class="setting-info"><div class="setting-title">Спектр в шапке</div></div><label class="switch"><input type="checkbox" id="toggleHeaderVis" ${configHeaderVis === 'on' ? 'checked' : ''}><span class="slider"></span></label></div>
+            <div class="setting-row"><div class="setting-info"><div class="setting-title">Спектр на фоне (Анимация)</div></div><label class="switch"><input type="checkbox" id="toggleVis" ${configVisualizerEnabled === 'on' ? 'checked' : ''}><span class="slider"></span></label></div>
+            <div class="setting-row"><div class="setting-info"><div class="setting-title">Системные уведомления</div></div><label class="switch"><input type="checkbox" id="toggleNotif" ${configNotif === 'on' ? 'checked' : ''}><span class="slider"></span></label></div>
+            <div class="setting-row"><div class="setting-info"><div class="setting-title">Интеграция Discord (RPC)</div></div><label class="switch"><input type="checkbox" id="toggleDiscord" ${configDiscord === 'on' ? 'checked' : ''}><span class="slider"></span></label></div>
 
             <div class="setting-row">
-              <div class="setting-info">
-                <div class="setting-title">Системные уведомления</div>
-                <div class="setting-desc">Показывать всплывающее окно Windows при смене трека</div>
+              <div class="setting-info"><div class="setting-title">Документы и обновления</div></div>
+              <div style="display:flex; gap:10px;">
+                <button class="btn-add" onclick="document.getElementById('eulaModal').style.display='flex'" style="background: rgba(255,255,255,0.1);">Лицензия</button>
+                <button class="btn-add" id="btnCheckUpdates">Обновления</button>
               </div>
-              <label class="switch"><input type="checkbox" id="toggleNotif" ${configNotif === 'on' ? 'checked' : ''}><span class="slider"></span></label>
-            </div>
-
-            <div class="setting-row">
-              <div class="setting-info">
-                <div class="setting-title">Интеграция Discord (RPC)</div>
-                <div class="setting-desc">Транслировать текущий трек в статус вашего профиля Discord</div>
-              </div>
-              <label class="switch"><input type="checkbox" id="toggleDiscord" ${configDiscord === 'on' ? 'checked' : ''}><span class="slider"></span></label>
-            </div>
-
-            <div class="setting-row" style="flex-direction:column; align-items:flex-start;">
-              <div class="setting-info" style="margin-bottom:15px;">
-                <div class="setting-title">Поделиться стилем (Экспорт / Импорт)</div>
-                <div class="setting-desc">Отправьте свой код настроек другу или примените чужой</div>
-              </div>
-              <div style="display: flex; gap: 10px; width: 100%;">
-                <input type="text" id="configCodeInput" class="settings-input" placeholder="Вставьте полученный код сюда..." style="flex:1;">
-                <button class="btn-add" id="btnApplyCode">Применить код</button>
-                <button class="btn-add" id="btnExportCode" style="background: #10b981;">Скопировать свой</button>
-              </div>
-            </div>
-
-            <div class="setting-row">
-              <div class="setting-info">
-                <div class="setting-title">Юридическая информация</div>
-                <div class="setting-desc">Правила использования программного обеспечения</div>
-              </div>
-              <button class="btn-add" onclick="document.getElementById('eulaModal').style.display='flex'" style="border-radius: 8px; padding: 10px 15px; background: rgba(255,255,255,0.1);">Лицензионное соглашение</button>
-            </div>
-
-            <div class="setting-row">
-              <div class="setting-info">
-                <div class="setting-title">Обновления плеера</div>
-                <div class="setting-desc">Проверить наличие новых версий на сервере</div>
-              </div>
-              <button class="btn-add" id="btnCheckUpdates" style="border-radius: 8px; padding: 10px 15px;">Проверить</button>
             </div>
 
             <div style="margin-top: 30px;">
               <h4 style="color: #fff; font-size: 15px; font-weight: 600; margin-bottom: 10px;">О системе</h4>
-              <div class="info-box">
-                <div class="info-item">Версия Snisago Music: <span>${APP_VERSION}</span></div>
-                <div class="info-item">Окружение Electron: <span>v${process.versions.electron}</span></div>
-                <div class="info-item">Платформа Node.js: <span>v${process.versions.node}</span></div>
-                <div class="info-item">Музыкальный шлюз: <span>yt-dlp Core (OK)</span></div>
+              <div style="display: grid; grid-template-columns: 1fr; gap: 8px; font-size: 13px; color: var(--text-muted); background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                <div>Версия Snisago Music: <span style="color:#fff; font-weight:bold;">${APP_VERSION}</span></div>
               </div>
             </div>
             
@@ -1257,45 +1205,43 @@
           </div>
         </div>`;
         
-        // Логика бинда горячих клавиш
         document.querySelectorAll('.hotkey-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                document.querySelectorAll('.hotkey-btn').forEach(b => {
-                    b.classList.remove('waiting');
-                    if (appConfig.hotkeys[b.dataset.action]) {
-                        b.innerText = formatKey(appConfig.hotkeys[b.dataset.action]);
-                    }
-                });
-                assigningHotkey = btn.dataset.action;
-                btn.classList.add('waiting');
-                btn.innerText = "Нажмите клавишу...";
+                document.querySelectorAll('.hotkey-btn').forEach(b => { b.classList.remove('waiting'); if (appConfig.hotkeys[b.dataset.action]) b.innerText = formatKey(appConfig.hotkeys[b.dataset.action]); });
+                assigningHotkey = btn.dataset.action; btn.classList.add('waiting'); btn.innerText = "Клавиша...";
             });
         });
 
-        // Логика кастомизации
         document.getElementById('colorAccent').addEventListener('input', e => { appConfig.accent = e.target.value; saveAppConfig(); });
         document.getElementById('colorText').addEventListener('input', e => { appConfig.text = e.target.value; saveAppConfig(); });
         document.getElementById('colorBg').addEventListener('input', e => { appConfig.bg = e.target.value; saveAppConfig(); });
-        document.getElementById('rangeOpacity').addEventListener('input', e => { appConfig.transparency = e.target.value; saveAppConfig(); });
         document.getElementById('chkRadio').addEventListener('change', e => { appConfig.hideRadio = e.target.checked; saveAppConfig(); });
         document.getElementById('chkPlaylists').addEventListener('change', e => { appConfig.hidePlaylists = e.target.checked; saveAppConfig(); });
         document.getElementById('chkMyMusic').addEventListener('change', e => { appConfig.hideMyMusic = e.target.checked; saveAppConfig(); });
 
-        document.getElementById('btnExportCode').addEventListener('click', () => {
-            const b64 = btoa(JSON.stringify(appConfig));
-            navigator.clipboard.writeText(b64);
-            showUpdateNotification("Код настроек скопирован в буфер обмена!");
-        });
+        document.getElementById('btnExportCode').addEventListener('click', () => { const b64 = btoa(JSON.stringify(appConfig)); navigator.clipboard.writeText(b64); showUpdateNotification("Код стиля скопирован в буфер!"); });
+        
         document.getElementById('btnApplyCode').addEventListener('click', () => {
-            try {
-                const code = document.getElementById('configCodeInput').value.trim();
-                const newConfig = JSON.parse(atob(code));
-                if (newConfig && newConfig.accent) { appConfig = newConfig; saveAppConfig(); renderTracks(); showUpdateNotification("Новый стиль применен!"); }
-            } catch(e) { showUpdateNotification("Ошибка! Неверный код настроек.", true); }
+            const code = document.getElementById('configCodeInput').value.trim();
+            if(code.startsWith('snisago-pl://')) {
+                try {
+                    const plData = JSON.parse(decodeURIComponent(escape(atob(code.replace('snisago-pl://', '')))));
+                    if (plData && plData.tracks) {
+                        plData.id = Date.now().toString(); // Новый ID
+                        customPlaylists.push(plData); savePlaylists(); renderPlaylistsSidebar();
+                        showUpdateNotification(`Плейлист "${plData.name}" успешно импортирован!`);
+                        document.getElementById('configCodeInput').value = '';
+                    }
+                } catch(e) { showUpdateNotification("Ошибка! Неверный код плейлиста.", true); }
+            } else {
+                try {
+                    const newConfig = JSON.parse(atob(code));
+                    if (newConfig && newConfig.accent) { appConfig = newConfig; saveAppConfig(); renderTracks(); showUpdateNotification("Новый стиль применен!"); }
+                } catch(e) { showUpdateNotification("Ошибка! Неверный код настроек.", true); }
+            }
         });
 
-        // Старая логика настроек
         document.querySelectorAll('.pill').forEach(pill => { pill.addEventListener('click', (e) => { document.querySelectorAll('.pill').forEach(p => p.classList.remove('active')); e.target.classList.add('active'); configTheme = e.target.dataset.theme; localStorage.setItem('snisago_theme', configTheme); document.getElementById('rowCustomBg').style.display = configTheme === 'custom' ? 'flex' : 'none'; applySavedConfig(); }); });
         document.getElementById('btnBrowseBg').addEventListener('click', () => { document.getElementById('fileInputBg').click(); });
         document.getElementById('fileInputBg').addEventListener('change', (e) => { const file = e.target.files[0]; if (file) { const realPath = webUtils.getPathForFile(file); configCustomBg = 'file:///' + realPath.replace(/\\/g, '/'); localStorage.setItem('snisago_custom_bg', configCustomBg); document.getElementById('inputCustomBg').value = "Локальный файл: " + file.name; applySavedConfig(); } });
@@ -1306,17 +1252,26 @@
         document.getElementById('toggleNotif').addEventListener('change', (e) => { configNotif = e.target.checked ? 'on' : 'off'; localStorage.setItem('snisago_notif', configNotif); });
         document.getElementById('toggleDiscord').addEventListener('change', (e) => { configDiscord = e.target.checked ? 'on' : 'off'; localStorage.setItem('snisago_discord', configDiscord); if (configDiscord === 'on' && isPlaying) updateDiscordRPC(true); else ipcRenderer.send('clear-rpc'); });
         document.getElementById('btnCheckUpdates').addEventListener('click', () => { showUpdateNotification("Проверка обновлений..."); ipcRenderer.send('check_update'); });
-        document.getElementById('btnFactoryReset').addEventListener('click', () => { if(confirm("Удалить все данные, включая избранные треки и настройки?")) { localStorage.clear(); window.location.reload(); } });
+        document.getElementById('btnFactoryReset').addEventListener('click', () => { if(confirm("Удалить все данные?")) { localStorage.clear(); window.location.reload(); } });
         return;
       }
 
+      let plIdForExport = null;
       if (currentFilter === 'myMusic') playlist = [...myMusicTracks];
-      else if (currentFilter.startsWith('playlist_')) { const plId = currentFilter.replace('playlist_', ''); const pl = customPlaylists.find(p => p.id === plId); playlist = pl ? [...pl.tracks] : []; }
+      else if (currentFilter.startsWith('playlist_')) { const plId = currentFilter.replace('playlist_', ''); plIdForExport = plId; const pl = customPlaylists.find(p => p.id === plId); playlist = pl ? [...pl.tracks] : []; }
       else if (currentFilter === 'record') playlist = radioDatabase.filter(r => r.category === 'record');
       else if (currentFilter === 'retro') playlist = radioDatabase.filter(r => r.category === 'retro');
       else if (currentFilter === 'modern') playlist = radioDatabase.filter(r => r.category === 'modern');
       else if (currentFilter === 'other') playlist = radioDatabase.filter(r => r.category === 'other');
       else if (currentFilter === 'fav') playlist = [...favoriteTracks];
+
+      // Добавляем кнопку шеринга для плейлистов
+      if (plIdForExport) {
+          const title = document.getElementById('sectionTitle');
+          if (!title.querySelector('.share-btn-head')) {
+              title.innerHTML += `<button class="share-btn-head btn-add" style="font-size:12px; padding:6px 12px; border-radius:6px; min-width:auto;" onclick="exportPlaylist('${plIdForExport}')">🔗 Поделиться</button>`;
+          }
+      }
 
       displayTracksUI();
     }
@@ -1330,7 +1285,6 @@
 
       currentTrackIndex = index;
       const track = playlist[index];
-      
       addToHistory(track);
       
       if (track.type === 'web') { audio.crossOrigin = "anonymous"; audio.src = track.src; } 
@@ -1408,32 +1362,23 @@
       else { iconAll.style.display = 'none'; iconOne.style.display = 'block'; repeatBtn.style.color = 'var(--accent)'; }
     });
 
-    // ГЛОБАЛЬНЫЙ СЛУШАТЕЛЬ ГОРЯЧИХ КЛАВИШ
     window.addEventListener('keydown', (e) => {
       if (assigningHotkey) {
           e.preventDefault(); e.stopPropagation();
           if (e.code !== 'Escape') { appConfig.hotkeys[assigningHotkey] = e.code; saveAppConfig(); }
           const btn = document.querySelector(`.hotkey-btn[data-action="${assigningHotkey}"]`);
           if (btn) { btn.classList.remove('waiting'); btn.innerText = formatKey(appConfig.hotkeys[assigningHotkey]); }
-          assigningHotkey = null;
-          return;
+          assigningHotkey = null; return;
       }
-      
       if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return; 
-      
       if (e.code === appConfig.hotkeys.play) { e.preventDefault(); togglePlay(); }
       if (e.code === appConfig.hotkeys.next) { e.preventDefault(); nextBtn.click(); }
       if (e.code === appConfig.hotkeys.prev) { e.preventDefault(); prevBtn.click(); }
-      if (e.code === appConfig.hotkeys.mute) { 
-          e.preventDefault(); 
-          audio.muted = !audio.muted; 
-          document.getElementById('muteBtn').style.stroke = audio.muted ? '#ef4444' : 'var(--text-muted)';
-      }
+      if (e.code === appConfig.hotkeys.mute) { e.preventDefault(); audio.muted = !audio.muted; document.getElementById('muteBtn').style.stroke = audio.muted ? '#ef4444' : 'var(--text-muted)'; }
     });
 
     window.addEventListener('click', (e) => { 
         ctxMenu.style.display = 'none'; 
-        
         if (assigningHotkey && !e.target.classList.contains('hotkey-btn')) {
             const btn = document.querySelector(`.hotkey-btn[data-action="${assigningHotkey}"]`);
             if (btn) { btn.classList.remove('waiting'); btn.innerText = formatKey(appConfig.hotkeys[assigningHotkey]); }
@@ -1441,7 +1386,6 @@
         }
     });
 
-    // ЗАГРУЗКА С ПК
     document.getElementById('btnLoadLocalFile').addEventListener('click', () => { document.getElementById('localAudioFiles').click(); });
     document.getElementById('localAudioFiles').addEventListener('change', (e) => {
         const files = Array.from(e.target.files);
@@ -1450,7 +1394,6 @@
                 const realPath = webUtils.getPathForFile(file);
                 const cleanName = file.name.replace(/\.[^/.]+$/, "");
                 let trackObj = { id: 'local-' + Date.now() + Math.random(), title: cleanName, artist: "ПК", src: realPath, type: "local", cover: 'linear-gradient(135deg, #64748b, #334155)', isRadio: false };
-                
                 if (window.jsmediatags) {
                   window.jsmediatags.read(file, {
                     onSuccess: function(tag) {
@@ -1468,7 +1411,7 @@
                   });
                 } else { myMusicTracks.unshift(trackObj); saveMyMusic(); if(currentFilter === 'myMusic') renderTracks(); }
             });
-            showUpdateNotification("Файлы успешно загружены в Медиатеку!");
+            showUpdateNotification("Файлы успешно загружены!");
         }
     });
 
@@ -1477,7 +1420,6 @@
         document.getElementById('currentTime').innerText = "LIVE"; document.getElementById('duration').innerText = "∞"; 
         progressBar.value = 100; progressBar.style.opacity = '0.6'; progressBar.style.pointerEvents = 'none'; updateRangeFills(); return; 
       }
-      
       progressBar.style.opacity = '1'; progressBar.style.pointerEvents = 'auto';
       progressBar.value = (audio.currentTime / audio.duration) * 100;
       let mins = Math.floor(audio.currentTime / 60); let secs = Math.floor(audio.currentTime % 60);
@@ -1498,9 +1440,9 @@
             const res = await fetch(`http://localhost:3000/api/info?url=${encodeURIComponent(val)}`).then(r => { if (!r.ok) throw new Error(); return r.json(); });
             newTrack = { id: 'ytdlp-' + Date.now(), title: res.title || "Трек из сети", artist: res.uploader || "Внешний источник", src: `http://localhost:3000/api/stream?url=${encodeURIComponent(val)}`, type: "web", cover: res.thumbnailUrl || 'linear-gradient(135deg, #8b5cf6, #d946ef)', isRadio: false };
          } catch(e) {
-            newTrack = { id: 'raw-' + Date.now(), title: "Пользовательский аудио-поток", artist: "Интернет", src: val, type: "web", cover: 'linear-gradient(135deg, #3b82f6, #06b6d4)', isRadio: val.includes('.m3u8') || val.includes('stream') || val.includes('radio') };
+            newTrack = { id: 'raw-' + Date.now(), title: "Пользовательский поток", artist: "Интернет", src: val, type: "web", cover: 'linear-gradient(135deg, #3b82f6, #06b6d4)', isRadio: val.includes('.m3u8') || val.includes('stream') || val.includes('radio') };
          }
-      } else { alert("Пожалуйста, введите корректную ссылку, начинающуюся с http:// или https://"); }
+      } else { alert("Введите корректную ссылку!"); }
       if(newTrack) { myMusicTracks.unshift(newTrack); saveMyMusic(); urlInput.value = ''; if (currentFilter === 'myMusic') renderTracks(); }
       addBtn.innerText = "Добавить";
     });
@@ -1517,35 +1459,26 @@
         } 
     });
 
-    // ДОБАВЛЕНИЕ В ПЛЕЙЛИСТ ЧЕРЕЗ КОНТЕКСТНОЕ МЕНЮ
-    document.getElementById('ctxAddToPlaylistBtn').addEventListener('click', () => {
-        if (rightClickedTrackIndex !== null) {
-            if (customPlaylists.length === 0) {
-                showUpdateNotification("У вас еще нет созданных плейлистов!", true);
-                return;
-            }
-            const plList = document.getElementById('plPickerList');
-            plList.innerHTML = '';
-            customPlaylists.forEach(pl => {
-                const btn = document.createElement('button');
-                btn.className = 'pl-picker-btn';
-                btn.innerText = `📁 ${pl.name}`;
-                btn.onclick = () => {
-                    const track = playlist[rightClickedTrackIndex];
-                    if(!pl.tracks.some(t => t.src === track.src)) {
-                        pl.tracks.push(track);
-                        savePlaylists();
-                        showUpdateNotification(`Трек добавлен в "${pl.name}"`);
-                    } else {
-                        showUpdateNotification(`Трек уже есть в "${pl.name}"`, true);
-                    }
-                    document.getElementById('addToPlaylistModal').style.display = 'none';
-                };
-                plList.appendChild(btn);
-            });
-            document.getElementById('addToPlaylistModal').style.display = 'flex';
-        }
-    });
+    // ВЫЗОВ ОКНА ДОБАВЛЕНИЯ В ПЛЕЙЛИСТ
+    function openPlaylistPicker() {
+        if (customPlaylists.length === 0) { showUpdateNotification("У вас еще нет созданных плейлистов!", true); return; }
+        const plList = document.getElementById('plPickerList'); plList.innerHTML = '';
+        customPlaylists.forEach(pl => {
+            const btn = document.createElement('button'); btn.className = 'pl-picker-btn';
+            btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15V6"></path><path d="M18.5 18a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"></path><path d="M12 12H3"></path><path d="M16 6H3"></path><path d="M12 18H3"></path></svg> ${pl.name}`;
+            btn.onclick = () => {
+                const track = playlist[rightClickedTrackIndex];
+                if(!pl.tracks.some(t => t.src === track.src)) {
+                    pl.tracks.push(track); savePlaylists(); showUpdateNotification(`Трек добавлен в "${pl.name}"`);
+                } else { showUpdateNotification(`Трек уже есть в "${pl.name}"`, true); }
+                document.getElementById('addToPlaylistModal').style.display = 'none';
+            };
+            plList.appendChild(btn);
+        });
+        document.getElementById('addToPlaylistModal').style.display = 'flex';
+    }
+
+    document.getElementById('ctxAddToPlaylistBtn').addEventListener('click', () => { if (rightClickedTrackIndex !== null) openPlaylistPicker(); });
     
     document.getElementById('ctxDelete').addEventListener('click', () => { 
       if (rightClickedTrackIndex !== null) { 
@@ -1569,23 +1502,17 @@
       e.preventDefault(); 
       const files = Array.from(e.dataTransfer.files); 
       const mp3Files = files.filter(file => file.name.toLowerCase().match(/\.(mp3|wav|ogg|flac|m4a)$/)); 
-      
       if (mp3Files.length > 0) { 
         mp3Files.forEach(file => { 
-          const realPath = webUtils.getPathForFile(file); 
-          const cleanName = file.name.replace(/\.[^/.]+$/, ""); 
-          
+          const realPath = webUtils.getPathForFile(file); const cleanName = file.name.replace(/\.[^/.]+$/, ""); 
           let trackObj = { id: 'local-' + Date.now() + Math.random(), title: cleanName, artist: "Локальный файл", src: realPath, type: "local", cover: 'linear-gradient(135deg, #64748b, #334155)', isRadio: false };
-
           if (window.jsmediatags) {
             window.jsmediatags.read(file, {
               onSuccess: function(tag) {
-                if (tag.tags.title) trackObj.title = tag.tags.title;
-                if (tag.tags.artist) trackObj.artist = tag.tags.artist;
+                if (tag.tags.title) trackObj.title = tag.tags.title; if (tag.tags.artist) trackObj.artist = tag.tags.artist;
                 const picture = tag.tags.picture;
                 if (picture) {
-                  let base64String = "";
-                  for (let i = 0; i < picture.data.length; i++) { base64String += String.fromCharCode(picture.data[i]); }
+                  let base64String = ""; for (let i = 0; i < picture.data.length; i++) { base64String += String.fromCharCode(picture.data[i]); }
                   trackObj.cover = "data:" + picture.format + ";base64," + window.btoa(base64String);
                 }
                 myMusicTracks.unshift(trackObj); saveMyMusic(); if(currentFilter === 'myMusic') renderTracks();
@@ -1650,30 +1577,12 @@
     renderPlaylistsSidebar();
     renderTracks();
 
-    // ============================================
-    // СИСТЕМА ПРОВЕРКИ ОБНОВЛЕНИЙ И УВЕДОМЛЕНИЙ
-    // ============================================
-
-    ipcRenderer.on('update_available', (event, version) => {
-      document.getElementById('updateVersionNum').innerText = version || 'Новая версия';
-      document.getElementById('updateModal').style.display = 'flex';
-    });
+    ipcRenderer.on('update_available', (event, version) => { document.getElementById('updateVersionNum').innerText = version || 'Новая версия'; document.getElementById('updateModal').style.display = 'flex'; });
     ipcRenderer.on('update_not_available', () => { showUpdateNotification("У вас установлена актуальная версия плеера."); });
-    ipcRenderer.on('update_error', (event, err) => {
-      alert("Техническая ошибка от Electron:\n" + err);
-      showUpdateNotification("Сбой: " + err, true);
-    });
-    ipcRenderer.on('update_downloaded', () => {
-      const btn = document.getElementById('btnDownloadUpdate');
-      btn.innerText = 'Установить и перезапустить'; btn.style.background = '#10b981'; btn.disabled = false;
-      btn.onclick = () => ipcRenderer.send('install_update');
-    });
-
+    ipcRenderer.on('update_error', (event, err) => { showUpdateNotification("Сбой обновления: " + err, true); });
+    ipcRenderer.on('update_downloaded', () => { const btn = document.getElementById('btnDownloadUpdate'); btn.innerText = 'Установить и перезапустить'; btn.style.background = '#10b981'; btn.disabled = false; btn.onclick = () => ipcRenderer.send('install_update'); });
     document.getElementById('btnCancelUpdate').addEventListener('click', () => { document.getElementById('updateModal').style.display = 'none'; });
-    document.getElementById('btnDownloadUpdate').addEventListener('click', (e) => {
-      if (e.target.innerText === 'Обновить') { e.target.innerText = 'Скачивание...'; e.target.disabled = true; ipcRenderer.send('download_update'); }
-    });
-
+    document.getElementById('btnDownloadUpdate').addEventListener('click', (e) => { if (e.target.innerText === 'Обновить') { e.target.innerText = 'Скачивание...'; e.target.disabled = true; ipcRenderer.send('download_update'); } });
   </script>
 </body>
 </html>
