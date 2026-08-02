@@ -43,20 +43,22 @@ jobs:
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: |
-          # Автоматически достаем версию из package.json (например, 1.1.8)
           APP_VERSION=$(node -p "require('./package.json').version")
           
-          curl -H "Content-Type: application/json" \
-          -X POST \
-          -d '{
+          # Аккуратно записываем наш текст в файл payload.json (это спасет кириллицу)
+          cat <<EOF > payload.json
+          {
             "content": "🎉 ||@here|| Вышло новое обновление!",
             "embeds": [{
-              "title": "Snisago Music обновлен до версии '"$APP_VERSION"'",
+              "title": "🚀 Snisago Music обновлен до версии $APP_VERSION",
               "description": "Сборка завершена! Плеер сам скачает обновление в фоне. Также вы можете зайти в **Настройки ➔ Обновления плеера**, чтобы установить его прямо сейчас.",
               "color": 9133238,
               "footer": {
                 "text": "Snisago Music Update System"
               }
             }]
-          }' \
-          $DISCORD_WEBHOOK
+          }
+          EOF
+          
+          # Отправляем этот файл в Discord через символ @
+          curl -H "Content-Type: application/json" -X POST -d @payload.json $DISCORD_WEBHOOK
