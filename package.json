@@ -1,6 +1,6 @@
 {
   "name": "snisago-music",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "description": "Десктопный музыкальный плеер Snisago Music на Electron",
   "main": "main.js",
   "scripts": {
