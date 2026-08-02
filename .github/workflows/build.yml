@@ -3,15 +3,14 @@ name: Build Snisago Music (Windows)
 on:
   push:
     branches: [ "main", "master" ]
-  workflow_dispatch: # Позволяет запустить сборку вручную по кнопке
+  workflow_dispatch:
 
-# ДАЕМ РАЗРЕШЕНИЕ РОБОТУ СОЗДАВАТЬ РЕЛИЗЫ
 permissions:
   contents: write
 
 jobs:
   build:
-    runs-on: windows-latest # Запускаем виртуальную машину на Windows
+    runs-on: windows-latest
 
     steps:
       - name: Скачивание исходного кода
@@ -20,7 +19,7 @@ jobs:
       - name: Установка Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22' # Версия Node.js для сборки
+          node-version: '22'
 
       - name: Установка зависимостей (npm install)
         run: npm install
@@ -28,7 +27,7 @@ jobs:
       - name: Компиляция и публикация релиза на GitHub
         run: npm run dist
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # ЭТОТ ТОКЕН РЕШИТ ОШИБКУ!
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Сохранение готового установщика и latest.yml в артефакты
         uses: actions/upload-artifact@v4
@@ -37,3 +36,27 @@ jobs:
           path: |
             dist/*.exe
             dist/latest.yml
+
+      - name: Уведомление в Discord
+        if: success()
+        shell: bash
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          # Автоматически достаем версию из package.json (например, 1.1.8)
+          APP_VERSION=$(node -p "require('./package.json').version")
+          
+          curl -H "Content-Type: application/json" \
+          -X POST \
+          -d '{
+            "content": "🎉 ||@here|| Вышло новое обновление!",
+            "embeds": [{
+              "title": "Snisago Music обновлен до версии '"$APP_VERSION"'",
+              "description": "Сборка завершена! Плеер сам скачает обновление в фоне. Также вы можете зайти в **Настройки ➔ Обновления плеера**, чтобы установить его прямо сейчас.",
+              "color": 9133238,
+              "footer": {
+                "text": "Snisago Music Update System"
+              }
+            }]
+          }' \
+          $DISCORD_WEBHOOK
