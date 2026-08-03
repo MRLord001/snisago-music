@@ -18,7 +18,7 @@ const appNews = [
 ];
 
 // ВСТАВЬ СЮДА СВОЙ МАССИВ РАДИОСТАНЦИЙ:
-const gistRadioStations = [
+const radioDatabase = [
       { id: "rd-1", title: "Радио Мелодия (СПБ)", artist: "Ретро стиль", src: "https://r1.mgradio.ru/melodia128", type: "web", isRadio: true, category: "retro", cover: "linear-gradient(135deg, #b91c1c, #7f1d1d)" },
       { id: "rd-2", title: "French Jazz", artist: "Ретро стиль / Джаз", src: "https://jazz-wr01-128.creacast.com/jazz-wr01-128.mp3", type: "web", isRadio: true, category: "retro", cover: "linear-gradient(135deg, #78350f, #451a03)" },
       { id: "rd-3", title: "Качающееся Радио", artist: "Ретро стиль / Свинг", src: "https://swingfm.ice.infomaniak.ch/swingfm-128.mp3", type: "web", isRadio: true, category: "retro", cover: "linear-gradient(135deg, #065f46, #064e3b)" },
