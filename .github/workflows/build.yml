@@ -1,9 +1,9 @@
 name: Build Snisago Music (Windows)
 
 on:
-  push:
-    branches: [ "main", "master" ]
-  workflow_dispatch:
+  release:
+    types: [published] # <--- Запускается только при публикации релиза на GitHub
+  workflow_dispatch: # Оставляем возможность запустить сборку вручную кнопкой
 
 permissions:
   contents: write
@@ -48,10 +48,10 @@ jobs:
           # Аккуратно записываем наш текст в файл payload.json (это спасет кириллицу)
           cat <<EOF > payload.json
           {
-            "content": "🎉 ||@here|| Вышло новое обновление!",
+            "content": "🎉 ||@here|| Вышло новое обновление (HOTFIX)!",
             "embeds": [{
               "title": "🚀 Snisago Music обновлен до версии $APP_VERSION",
-              "description": "Сборка завершена! Плеер сам скачает обновление в фоне. Также вы можете зайти в **Настройки ➔ Обновления плеера**, чтобы установить его прямо сейчас.",
+              "description": "Сборка завершена! Установочный файл успешно прикреплен в разделе Releases. Плеер сам скачает обновление в фоне (или скачайте вручную, если старая версия не открывается).",
               "color": 9133238,
               "footer": {
                 "text": "Snisago Music Update System"
@@ -60,5 +60,5 @@ jobs:
           }
           EOF
           
-          # Отправляем этот файл в Discord через символ @
+          # Отправляем этот файл в Discord
           curl -H "Content-Type: application/json" -X POST -d @payload.json $DISCORD_WEBHOOK
