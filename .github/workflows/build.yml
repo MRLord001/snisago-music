@@ -42,23 +42,29 @@ jobs:
         shell: bash
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          RELEASE_BODY: ${{ github.event.release.body }} 
+          RELEASE_NAME: ${{ github.event.release.name }}
         run: |
-          APP_VERSION=$(node -p "require('./package.json').version")
+          node -e "
+          const fs = require('fs');
+          const version = require('./package.json').version;
+          const body = process.env.RELEASE_BODY || 'Описание обновления не указано.';
+          const releaseName = process.env.RELEASE_NAME || 'Обновление';
           
-          # Аккуратно записываем наш текст в файл payload.json (это спасет кириллицу)
-          cat <<EOF > payload.json
-          {
-            "content": "🎉 ||@here|| Вышло новое обновление (HOTFIX)!",
-            "embeds": [{
-              "title": "🚀 Snisago Music обновлен до версии $APP_VERSION",
-              "description": "Сборка завершена! Установочный файл успешно прикреплен в разделе Releases. Плеер сам скачает обновление в фоне (или скачайте вручную, если старая версия не открывается).",
-              "color": 9133238,
-              "footer": {
-                "text": "Snisago Music Update System"
+          const payload = {
+            content: '🎉 ||@here|| Доступна новая версия!',
+            embeds: [{
+              title: '🚀 Snisago Music обновлен до версии ' + version + ' (' + releaseName + ')',
+              description: '**Список изменений:**\n' + body + '\n\n*Вы можете обновить плеер самостоятельно в настройках приложения. Автоматическая проверка и загрузка обновлений происходит при каждом запуске плеера.*',
+              color: 9133238,
+              footer: {
+                text: 'Snisago Music Update System'
               }
             }]
-          }
-          EOF
+          };
+          fs.writeFileSync('payload.json', JSON.stringify(payload));
+          "
           
           # Отправляем этот файл в Discord
           curl -H "Content-Type: application/json" -X POST -d @payload.json $DISCORD_WEBHOOK
+          
